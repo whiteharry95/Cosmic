@@ -2,34 +2,71 @@
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Graphics;
     using Microsoft.Xna.Framework.Input;
+    using Cosmic.Entities;
+    using Cosmic.Items;
+    using Cosmic.Tiles;
+    using Cosmic.UI;
+    using System;
+    using System.Collections.Generic;
+    using Cosmic.Worlds;
 
     public class Game1 : Game {
-        private GraphicsDeviceManager _graphics;
-        private SpriteBatch _spriteBatch;
+        public const int tileSize = 16;
+
+        public static GraphicsDevice graphicsDeviceStatic;
+        public static GraphicsDeviceManager graphicsDeviceManager;
+        public static SpriteBatch spriteBatch;
+
+        public static Random random = new Random();
+
+        public static List<Texture2D> texturesToUnload = new List<Texture2D>();
 
         public Game1() {
-            _graphics = new GraphicsDeviceManager(this);
+            graphicsDeviceManager = new GraphicsDeviceManager(this);
+            graphicsDeviceManager.PreferredBackBufferWidth = 1920;
+            graphicsDeviceManager.PreferredBackBufferHeight = 1080;
+            graphicsDeviceManager.ApplyChanges();
+
             Content.RootDirectory = "Content";
-            IsMouseVisible = true;
         }
 
         protected override void Initialize() {
-            // TODO: Add your initialization logic here
+            graphicsDeviceStatic = GraphicsDevice;
+
+            TileManager.Init();
+            ItemManager.Init();
 
             base.Initialize();
         }
 
         protected override void LoadContent() {
-            _spriteBatch = new SpriteBatch(GraphicsDevice);
+            spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            // TODO: use this.Content to load your game content here
+            AssetManager.Load(Content);
+            TileManager.Load(Content);
+            ItemManager.Load(Content);
+            WorldManager.Load(Content);
+            EntityManager.Load(Content);
+            UIManager.Load(Content);
+        }
+
+        protected override void UnloadContent() {
+            foreach (Texture2D textureToUnload in texturesToUnload) {
+                textureToUnload.Dispose();
+            }
         }
 
         protected override void Update(GameTime gameTime) {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-                Exit();
+            InputManager.Update(gameTime);
 
-            // TODO: Add your update logic here
+            if (InputManager.GetKeyPressed(Keys.R)) {
+                Restart();
+            }
+
+            WorldManager.Update(gameTime);
+            EntityManager.Update(gameTime);
+            Camera.Update(gameTime);
+            UIManager.Update(gameTime);
 
             base.Update(gameTime);
         }
@@ -37,9 +74,26 @@
         protected override void Draw(GameTime gameTime) {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            // TODO: Add your drawing code here
+            spriteBatch.Begin(samplerState: SamplerState.PointClamp);
+
+            WorldManager.Draw(gameTime);
+            EntityManager.Draw(gameTime);
+            UIManager.Draw(gameTime);
+
+            spriteBatch.End();
 
             base.Draw(gameTime);
+        }
+
+        private void Restart() {
+            TileManager.Init();
+            ItemManager.Init();
+
+            TileManager.Load(Content);
+            ItemManager.Load(Content);
+            WorldManager.Load(Content);
+            EntityManager.Load(Content);
+            UIManager.Load(Content);
         }
     }
 }
