@@ -41,9 +41,11 @@
             } else {
                 velocity.Y += Math.Min(world.fallSpeed, Math.Abs(fallSpeedMax - velocity.Y)) * Math.Sign(fallSpeedMax - velocity.Y);
 
-                if (collider.GetCollisionWithTiles(new Vector2(velocity.X, 0f))) {
-                    collider.MakeContactWithTiles(Math.Abs(velocity.X), velocity.X >= 0f ? 0 : 2);
-                    velocity.X = 0f;
+                if (velocity.X != 0f) {
+                    if (collider.GetCollisionWithTiles(new Vector2(velocity.X, 0f))) {
+                        collider.MakeContactWithTiles(Math.Abs(velocity.X), velocity.X >= 0f ? 0 : 2);
+                        velocity.X = 0f;
+                    }
                 }
 
                 if (collider.GetCollisionWithTiles(new Vector2(0f, velocity.Y))) {
@@ -57,6 +59,10 @@
             }
 
             base.Update(gameTime);
+
+            if (position.X < 0f || position.Y < 0f || position.X >= world.Width || position.Y >= world.Height) {
+                Destroy();
+            }
         }
     }
 }

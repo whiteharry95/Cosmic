@@ -1,8 +1,8 @@
-﻿namespace Cosmic.Items.Weapons.Guns {
-    using Microsoft.Xna.Framework;
+﻿namespace Cosmic.Items.Weapons.Explosives {
     using Cosmic.Entities;
+    using Microsoft.Xna.Framework;
 
-    public class GunWeapon : WeaponItem {
+    public class ExplosiveWeapon : WeaponItem {
         public float projectileSpeed;
         public int projectileDamage;
         public float projectileOffset;

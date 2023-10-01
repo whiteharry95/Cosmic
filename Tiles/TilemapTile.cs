@@ -3,8 +3,6 @@
     using Cosmic.Entities;
 
     public class TilemapTile {
-        public Point Position => new Point(X, Y);
-
         public Tile Tile { get; private set; }
 
         public Tilemap Tilemap { get; private set; }
@@ -39,7 +37,7 @@
 
             if (Life <= 0) {
                 if (Tile.item != null) {
-                    ItemDrop itemDrop = EntityManager.AddEntity<ItemDrop>((Position.ToVector2() + new Vector2(0.5f)) * Game1.tileSize, Tilemap.world);
+                    ItemDrop itemDrop = EntityManager.AddEntity<ItemDrop>((new Point(X, Y).ToVector2() + new Vector2(0.5f)) * Game1.tileSize, Tilemap.world);
                     itemDrop.item = Tile.item;
                 }
 

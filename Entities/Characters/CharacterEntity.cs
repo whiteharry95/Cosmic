@@ -1,17 +1,24 @@
 ﻿namespace Cosmic.Entities.Characters {
     using Microsoft.Xna.Framework;
-    using System.Diagnostics;
-    using System.Diagnostics.SymbolStore;
+    using System;
 
     public abstract class CharacterEntity : Entity {
         public int health;
         public int healthMax;
+
+        public float hunger;
+        public float hungerChange = 0.025f;
+        public float hungerMax;
 
         public int invincibilityTime;
         public int invincibilityTimeMax;
 
         public override void Update(GameTime gameTime) {
             base.Update(gameTime);
+
+            if (hunger > 0f) {
+                hunger -= Math.Min(hungerChange, hunger);
+            }
 
             if (invincibilityTime > 0) {
                 invincibilityTime--;
@@ -23,7 +30,31 @@
         }
 
         public virtual bool Hurt(int damage, Vector2? force = null, Vector2? position = null) {
-            if (damage <= 0 || invincibilityTime > 0) {
+            if (damage == 0 || invincibilityTime > 0) {
+                return false;
+            }
+
+            health -= damage;
+            health = Math.Clamp(health, 0, healthMax);
+
+            if (health <= 0) {
+                Destroy();
+            }
+
+            if (force != null) {
+                velocity = (Vector2)force;
+            }
+
+            invincibilityTime = invincibilityTimeMax;
+
+            DamageText damageText = EntityManager.AddEntity<DamageText>(position ?? this.position, world);
+            damageText.damage = damage;
+
+            return true;
+        }
+
+        /*public virtual bool Feed(float amount) {
+            if (amount == 0 || invincibilityTime > 0) {
                 return false;
             }
 
@@ -43,7 +74,7 @@
             damageText.damage = damage;
 
             return true;
-        }
+        }*/
 
         public virtual void Test() {
             return;

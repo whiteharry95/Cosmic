@@ -9,7 +9,7 @@
 
         public static TileSelection tileSelections;
         public static CharacterHealthBars characterHealthBars;
-        public static DamageTexts damageTexts;
+        public static DamageText damageTexts;
         public static PlayerInventory playerInventory;
         public static Cursor cursor;
 
@@ -17,7 +17,7 @@
             uIElements = new List<UIElement> {
                 (tileSelections = new TileSelection()),
                 (characterHealthBars = new CharacterHealthBars()),
-                (damageTexts = new DamageTexts()),
+                (damageTexts = new DamageText()),
                 (playerInventory = new PlayerInventory()),
                 (cursor = new Cursor())
             };

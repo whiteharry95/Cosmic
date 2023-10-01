@@ -1,14 +1,14 @@
 ﻿namespace Cosmic {
-    using Microsoft.Xna.Framework;
-    using Microsoft.Xna.Framework.Graphics;
-    using Microsoft.Xna.Framework.Input;
     using Cosmic.Entities;
     using Cosmic.Items;
     using Cosmic.Tiles;
     using Cosmic.UI;
+    using Cosmic.Worlds;
+    using Microsoft.Xna.Framework;
+    using Microsoft.Xna.Framework.Graphics;
+    using Microsoft.Xna.Framework.Input;
     using System;
     using System.Collections.Generic;
-    using Cosmic.Worlds;
 
     public class Game1 : Game {
         public const int tileSize = 16;
@@ -43,9 +43,11 @@
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             AssetManager.Load(Content);
-            TileManager.Load(Content);
-            ItemManager.Load(Content);
-            WorldManager.Load(Content);
+
+            TileManager.Generate();
+            ItemManager.Generate();
+            WorldManager.Generate();
+
             EntityManager.Load(Content);
             UIManager.Load(Content);
         }
@@ -89,9 +91,10 @@
             TileManager.Init();
             ItemManager.Init();
 
-            TileManager.Load(Content);
-            ItemManager.Load(Content);
-            WorldManager.Load(Content);
+            TileManager.Generate();
+            ItemManager.Generate();
+            WorldManager.Generate();
+
             EntityManager.Load(Content);
             UIManager.Load(Content);
         }

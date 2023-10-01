@@ -4,6 +4,8 @@
     using Cosmic.Worlds;
     using System;
     using System.Collections.Generic;
+    using System.Text;
+    using Cosmic.UI.UIElements;
 
     public class Tilemap {
         public int Width => tiles.GetLength(0);
@@ -86,26 +88,24 @@
             return GetTilePositionCollisionWithEntity<T>(position.X, position.Y);
         }
 
-        public List<TilemapTile> GetTilesWithinRange(int cx, int cy, int range, Predicate<TilemapTile> predicate = null) {
-            List<TilemapTile> _tiles = new List<TilemapTile>();
+        public List<TilemapTile> GetTilesWithinRange(int cx, int cy, int range) {
+            List<TilemapTile> tiles = new List<TilemapTile>();
 
-            for (int y = cy - range; y <= cy + range; y++) {
-                for (int x = cx - range; x <= cx + range; x++) {
+            for (int y = cy - (int)Math.Floor(range / 2f); y < cy + Math.Ceiling(range / 2f); y++) {
+                for (int x = cx - (int)Math.Floor(range / 2f); x < cx + Math.Ceiling(range / 2f); x++) {
                     TilemapTile tile = GetTile(x, y);
 
                     if (tile != null) {
-                        if (predicate?.Invoke(tile) ?? true) {
-                            _tiles.Add(tile);
-                        }
+                        tiles.Add(tile);
                     }
                 }
             }
 
-            return _tiles;
+            return tiles;
         }
 
-        public List<TilemapTile> GetTilesWithinRange(Point centrePosition, int range, Predicate<TilemapTile> predicate = null) {
-            return GetTilesWithinRange(centrePosition.X, centrePosition.Y, range, predicate);
+        public List<TilemapTile> GetTilesWithinRange(Point centrePosition, int range) {
+            return GetTilesWithinRange(centrePosition.X, centrePosition.Y, range);
         }
 
         public static Point GetWorldToTilePosition(Vector2 position) {

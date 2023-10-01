@@ -25,11 +25,11 @@
                 hotbarSlotSelected += EntityManager.player.inventory.Width;
             }
 
+            slotSelected = new Point(-1, -1);
+
             if (InputManager.GetKeyPressed(Keys.Tab)) {
                 open = !open;
             }
-
-            slotSelected = new Point(-1, -1);
 
             if (open) {
                 for (int y = 0; y < EntityManager.player.inventory.Height; y++) {
@@ -56,19 +56,19 @@
                     Vector2 slotPosition = GetSlotPosition(x, y);
 
                     inventorySlotSprite.Draw(slotPosition, 0f, 1f, 1f);
-                    DrawUtilities.DrawString(AssetManager.arial, new DrawUtilities.Text((EntityManager.player.inventory.slots[x, y]?.item.id ?? -1).ToString()), slotPosition, (slotSelected.X == x && slotSelected.Y == y) ? Color.Yellow : ((x == EntityManager.player.inventoryHotbarSlotSelected && y == 0) ? Color.Blue : Color.White), DrawUtilities.AlignmentHor.Middle, DrawUtilities.AlignmentVer.Middle);
+                    DrawUtilities.DrawText(AssetManager.arial, (EntityManager.player.inventory.slots[x, y]?.item.id ?? -1).ToString(), slotPosition, (slotSelected.X == x && slotSelected.Y == y) ? Color.Yellow : ((x == hotbarSlotSelected && y == 0) ? Color.Blue : Color.White), DrawUtilities.AlignmentHor.Middle, DrawUtilities.AlignmentVer.Middle);
                 }
             }
 
-            if (EntityManager.player.inventory.slots[EntityManager.player.inventoryHotbarSlotSelected, 0] != null) {
+            if (EntityManager.player.inventory.slots[hotbarSlotSelected, 0] != null) {
                 Vector2 itemTextPosition = GetHotbarPosition() - new Vector2(0f, 72f);
-                string itemText = EntityManager.player.inventory.slots[EntityManager.player.inventoryHotbarSlotSelected, 0].item.name;
+                string itemText = EntityManager.player.inventory.slots[hotbarSlotSelected, 0].item.name;
 
-                if (EntityManager.player.inventory.slots[EntityManager.player.inventoryHotbarSlotSelected, 0].quantity > 1) {
-                    itemText += $", {EntityManager.player.inventory.slots[EntityManager.player.inventoryHotbarSlotSelected, 0].quantity}x";
+                if (EntityManager.player.inventory.slots[hotbarSlotSelected, 0].quantity > 1) {
+                    itemText += $", {EntityManager.player.inventory.slots[hotbarSlotSelected, 0].quantity}x";
                 }
 
-                DrawUtilities.DrawString(AssetManager.arial, new DrawUtilities.Text(itemText), itemTextPosition, Color.White, DrawUtilities.AlignmentHor.Middle, DrawUtilities.AlignmentVer.Middle);
+                DrawUtilities.DrawText(AssetManager.arial, itemText, itemTextPosition, Color.White, DrawUtilities.AlignmentHor.Middle, DrawUtilities.AlignmentVer.Middle);
             }
         }
 

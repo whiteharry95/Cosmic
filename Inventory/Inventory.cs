@@ -1,4 +1,6 @@
-﻿namespace Cosmic.Items {
+﻿using Cosmic.Items;
+
+namespace Cosmic.Inventory {
     public class Inventory {
         public int Width => slots.GetLength(0);
         public int Height => slots.GetLength(1);

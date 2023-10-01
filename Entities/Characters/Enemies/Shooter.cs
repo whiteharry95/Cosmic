@@ -1,4 +1,5 @@
 ﻿namespace Cosmic.Entities.Characters.Enemies {
+    using Cosmic.Items;
     using Microsoft.Xna.Framework;
     using System;
 
@@ -14,8 +15,6 @@
 
             sprite = new Sprite(AssetManager.shooter, new Vector2(AssetManager.shooter.Width, AssetManager.shooter.Height) / 2f);
             collider = new EntityCollider(this, new Box(-sprite.origin, sprite.Size.ToVector2()));
-
-            spawnPoints = 30;
         }
 
         public override void Update(GameTime gameTime) {
@@ -43,12 +42,18 @@
             } else {
                 Projectile projectile = EntityManager.AddEntity<Projectile>(position, world);
                 projectile.velocity = Vector2.Normalize(EntityManager.player.position - position) * 16f;
-                projectile.damage = 4;
-                projectile.strength = 2f;
+                projectile.damage = 3;
                 projectile.enemy = true;
 
                 shootTime = 0;
             }
+        }
+
+        public override void Destroy() {
+            ItemDrop itemDrop = EntityManager.AddEntity<ItemDrop>(position, world);
+            itemDrop.item = ItemManager.beef;
+
+            base.Destroy();
         }
     }
 }

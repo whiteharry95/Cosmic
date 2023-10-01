@@ -1,10 +1,9 @@
 ﻿namespace Cosmic.Items.Weapons.Guns {
     using Microsoft.Xna.Framework;
-    using Microsoft.Xna.Framework.Content;
     using System;
 
     public class Sword : SwordWeapon {
-        public override void Load(ContentManager contentManager) {
+        public override void Generate() {
             name = "Sword";
 
             sprite = new Sprite(AssetManager.sword, new Vector2(0f, AssetManager.sword.Height) / 2f);
@@ -13,7 +12,7 @@
 
             holdRotationOffset = (float)(Math.PI * (7f / 12f));
 
-            hitboxDamage = 4;
+            hitboxDamage = 8;
             hitboxStrength = 4f;
             hitboxOffset = 48f;
         }

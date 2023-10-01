@@ -3,14 +3,6 @@
     using Microsoft.Xna.Framework.Graphics;
 
     public static class DrawUtilities {
-        public class Text {
-            public string text;
-
-            public Text(string text) {
-                this.text = text;
-            }
-        }
-
         public enum AlignmentHor {
             Left,
             Middle,
@@ -23,13 +15,9 @@
             Bottom
         }
 
-        public static Vector2 GetStringSize(SpriteFont font, string text) {
-            return font.MeasureString(text);
-        }
-
-        public static void DrawString(SpriteFont font, Text text, Vector2 position, Color colour, AlignmentHor alignmentHor, AlignmentVer alignmentVer) {
-            Vector2 size = font.MeasureString(text.text);
-            string[] lines = text.text.Split('\n');
+        public static void DrawText(SpriteFont font, string text, Vector2 position, Color colour, AlignmentHor alignmentHor, AlignmentVer alignmentVer) {
+            Vector2 size = font.MeasureString(text);
+            string[] lines = text.Split('\n');
 
             foreach (string line in lines) {
                 Vector2 lineSize = font.MeasureString(line);

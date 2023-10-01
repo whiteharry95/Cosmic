@@ -22,6 +22,8 @@
         public static Texture2D sword;
         public static Texture2D hitbox;
         public static Texture2D shield;
+        public static Texture2D bomb;
+        public static Texture2D beef;
 
         public static SpriteFont arial;
         public static SpriteFont arialSmall;
@@ -46,6 +48,8 @@
             sword = contentManager.Load<Texture2D>("Textures/Sword");
             hitbox = contentManager.Load<Texture2D>("Textures/Hitbox");
             shield = contentManager.Load<Texture2D>("Textures/Shield");
+            bomb = contentManager.Load<Texture2D>("Textures/Bomb");
+            beef = contentManager.Load<Texture2D>("Textures/Beef");
 
             arial = contentManager.Load<SpriteFont>("Fonts/Arial");
             arialSmall = contentManager.Load<SpriteFont>("Fonts/ArialSmall");

@@ -9,7 +9,7 @@
 
     public class Projectile : Entity {
         public int damage;
-        public float strength;
+        public float? strength;
 
         public bool enemy;
 
@@ -24,7 +24,7 @@
             float distance = velocity.Length();
 
             for (float distanceMoved = 0; distanceMoved < distance;) {
-                float distanceToMove = Math.Min(1f, distance - distanceMoved);
+                float distanceToMove = Math.Min(0.5f, distance - distanceMoved);
 
                 bool destroy = false;
 
@@ -39,7 +39,7 @@
                 if (collider.GetCollisionWithEntities(out List<CharacterEntity> characters)) {
                     foreach (CharacterEntity character in characters) {
                         if (character is EnemyCharacter ^ enemy) {
-                            character.Hurt(damage, Vector2.Normalize(velocity) * strength, new Vector2(Math.Clamp(character.position.X, position.X + collider.box.Left, position.X + collider.box.Right), Math.Clamp(character.position.Y, position.Y + collider.box.Top, position.Y + collider.box.Bottom)));
+                            character.Hurt(damage, Vector2.Normalize(velocity) * (strength ?? (velocity.Length() / 8f)), new Vector2(Math.Clamp(character.position.X, position.X + collider.box.Left, position.X + collider.box.Right), Math.Clamp(character.position.Y, position.Y + collider.box.Top, position.Y + collider.box.Bottom)));
                             destroy = true;
                         }
                     }

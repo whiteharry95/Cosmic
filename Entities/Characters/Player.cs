@@ -6,12 +6,14 @@
     using Cosmic.Items;
     using Cosmic.Items.Blocks;
     using Cosmic.Tiles;
-    using Cosmic.Worlds;
     using System;
     using System.Collections.Generic;
+    using Cosmic.UI;
+    using Cosmic.Inventory;
+    using System.Diagnostics;
 
     public class Player : CharacterEntity {
-        public Item ItemCurrent => inventory.slots[inventoryHotbarSlotSelected, 0]?.item;
+        public Item ItemCurrent => inventory.slots[UIManager.playerInventory.hotbarSlotSelected, 0]?.item;
         public int ItemUseTime { get; private set; }
 
         public float itemRotationOffset;
@@ -36,10 +38,10 @@
         private int dashBreakTimeMax = 60;
 
         public Inventory inventory;
-        public int inventoryHotbarSlotSelected;
 
         public List<Point> tileSelection = new List<Point>();
-        public int tileSelectionRange = 3;
+        public int tileSelectionSize = 4;
+        public int tileSelectionRange = 12;
         public bool tileSelectionWalls;
 
         public override void Init() {
@@ -47,6 +49,9 @@
 
             healthMax = 100;
             health = healthMax;
+
+            hungerMax = 100f;
+            hunger = hungerMax;
 
             invincibilityTimeMax = 15;
 
@@ -118,9 +123,11 @@
                 dashBreakTime--;
             }
 
-            if (collider.GetCollisionWithTiles(new Vector2(velocity.X, 0f))) {
-                collider.MakeContactWithTiles(Math.Abs(velocity.X), velocity.X >= 0f ? 0 : 2);
-                velocity.X = 0f;
+            if (velocity.X != 0f) {
+                if (collider.GetCollisionWithTiles(new Vector2(velocity.X, 0f))) {
+                    collider.MakeContactWithTiles(Math.Abs(velocity.X), velocity.X >= 0f ? 0 : 2);
+                    velocity.X = 0f;
+                }
             }
 
             if (collider.GetCollisionWithTiles(new Vector2(0f, velocity.Y))) {
@@ -153,21 +160,24 @@
 
             tileSelection.Clear();
 
-            int tileSelectionRangeCapped = EntityManager.player.tileSelectionRange;
+            int tileSelectionSizeCapped = tileSelectionSize;
 
             if (ItemCurrent is BlockItem) {
-                int itemQuantity = EntityManager.player.inventory.GetItemQuantity(ItemCurrent);
+                int itemQuantity = inventory.GetItemQuantity(ItemCurrent);
 
-                while (tileSelectionRangeCapped * tileSelectionRangeCapped > itemQuantity) {
-                    tileSelectionRangeCapped--;
+                while (tileSelectionSizeCapped * tileSelectionSizeCapped > itemQuantity) {
+                    tileSelectionSizeCapped--;
                 }
             }
 
-            Point mouseTilePosition = Tilemap.GetWorldToTilePosition(InputManager.GetMousePosition() - new Vector2(Math.Max((tileSelectionRangeCapped / 2f) - 0.5f, 0f)) * Game1.tileSize);
+            Point tilePosition = Tilemap.GetWorldToTilePosition(position + new Vector2(tileSelectionRange % 2f == 0f ? (Game1.tileSize / 2f) : 0f));
+            Point mouseTilePosition = Tilemap.GetWorldToTilePosition(InputManager.GetMousePosition() + new Vector2(tileSelectionSizeCapped % 2f == 0f ? (Game1.tileSize / 2f) : 0f));
 
-            for (int y = mouseTilePosition.Y; y < mouseTilePosition.Y + tileSelectionRangeCapped; y++) {
-                for (int x = mouseTilePosition.X; x < mouseTilePosition.X + tileSelectionRangeCapped; x++) {
-                    tileSelection.Add(new Point(x, y));
+            for (int y = mouseTilePosition.Y - (int)Math.Floor(tileSelectionSizeCapped / 2f); y < mouseTilePosition.Y + Math.Ceiling(tileSelectionSizeCapped / 2f); y++) {
+                for (int x = mouseTilePosition.X - (int)Math.Floor(tileSelectionSizeCapped / 2f); x < mouseTilePosition.X + Math.Ceiling(tileSelectionSizeCapped / 2f); x++) {
+                    if (x >= tilePosition.X - (int)Math.Floor(tileSelectionRange / 2f) && y >= tilePosition.Y - (int)Math.Floor(tileSelectionRange / 2f) && x < tilePosition.X + Math.Ceiling(tileSelectionRange / 2f) && y < tilePosition.Y + Math.Ceiling(tileSelectionRange / 2f)) {
+                        tileSelection.Add(new Point(x, y));
+                    }
                 }
             }
 

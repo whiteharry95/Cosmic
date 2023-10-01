@@ -1,6 +1,4 @@
 ﻿namespace Cosmic.Items {
-    using Microsoft.Xna.Framework.Content;
-
     public abstract class Item {
         public int id;
 
@@ -9,6 +7,7 @@
         public Sprite sprite;
 
         public int useTime;
+        public bool useHold = true;
 
         public int stack = 1;
 
@@ -17,7 +16,7 @@
         public float holdLengthOffset;
         public float holdRotationOffset;
 
-        public virtual void Load(ContentManager contentManager) {
+        public virtual void Generate() {
         }
 
         public virtual void OnUse() {

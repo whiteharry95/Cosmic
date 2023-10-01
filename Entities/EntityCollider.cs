@@ -5,6 +5,8 @@
     using System.Collections.Generic;
 
     public class EntityCollider {
+        private const int tileRange = 12;
+
         public Entity entity;
         public Box box;
 
@@ -60,8 +62,7 @@
         }
 
         public bool GetCollisionWithTiles(Vector2? offset = null, Predicate<TilemapTile> predicate = null) {
-            Point tilemapPosition = Tilemap.GetWorldToTilePosition(entity.position);
-            List<TilemapTile> tilemapTilesWithinRange = entity.world.tilemap.GetTilesWithinRange(tilemapPosition.X, tilemapPosition.Y, 8);
+            List<TilemapTile> tilemapTilesWithinRange = entity.world.tilemap.GetTilesWithinRange(Tilemap.GetWorldToTilePosition(entity.position + new Vector2(tileRange % 2f == 0f ? (Game1.tileSize / 2f) : 0f)), tileRange);
 
             Box boxOffset = new Box(entity.position + box.Position + (offset ?? Vector2.Zero), box.Size);
 
@@ -85,8 +86,7 @@
         public bool GetCollisionWithTiles(out List<TilemapTile> tilemapTiles, Vector2? offset = null, Predicate<TilemapTile> predicate = null) {
             tilemapTiles = new List<TilemapTile>();
 
-            Point tilemapPosition = Tilemap.GetWorldToTilePosition(entity.position);
-            List<TilemapTile> tilemapTilesWithinRange = entity.world.tilemap.GetTilesWithinRange(tilemapPosition.X, tilemapPosition.Y, 8);
+            List<TilemapTile> tilemapTilesWithinRange = entity.world.tilemap.GetTilesWithinRange(Tilemap.GetWorldToTilePosition(entity.position + new Vector2(tileRange % 2f == 0f ? (Game1.tileSize / 2f) : 0f)), tileRange);
 
             Box boxOffset = new Box(entity.position + box.Position + (offset ?? Vector2.Zero), box.Size);
 
@@ -111,8 +111,7 @@
             for (float distanceMoved = 0f; distanceMoved < distance;) {
                 float distanceToMove = Math.Min(0.5f, distance - distanceMoved);
 
-                float xTo = entity.position.X;
-                float yTo = entity.position.Y;
+                Vector2 positionTo = new Vector2(entity.position.X, entity.position.Y);
 
                 switch (direction) {
                     case 0:
@@ -124,7 +123,7 @@
                             }
                         }
 
-                        xTo += distanceToMove;
+                        positionTo.X += distanceToMove;
 
                         break;
 
@@ -137,7 +136,7 @@
                             }
                         }
 
-                        yTo -= distanceToMove;
+                        positionTo.Y -= distanceToMove;
 
                         break;
 
@@ -150,7 +149,7 @@
                             }
                         }
 
-                        xTo -= distanceToMove;
+                        positionTo.X -= distanceToMove;
 
                         break;
 
@@ -163,27 +162,24 @@
                             }
                         }
 
-                        yTo += distanceToMove;
+                        positionTo.Y += distanceToMove;
 
                         break;
                 }
 
                 bool collision = false;
 
-                Point tilemapPosition = Tilemap.GetWorldToTilePosition(new Vector2(xTo, yTo));
-                List<TilemapTile> tilemapTilesWithinRange = entity.world.tilemap.GetTilesWithinRange(tilemapPosition.X, tilemapPosition.Y, 8);
+                List<TilemapTile> tilemapTilesWithinRange = entity.world.tilemap.GetTilesWithinRange(Tilemap.GetWorldToTilePosition(positionTo + new Vector2(tileRange % 2f == 0f ? (Game1.tileSize / 2f) : 0f)), tileRange);
 
                 foreach (TilemapTile tilemapTile in tilemapTilesWithinRange) {
-                    if (new Box(xTo + box.x, yTo + box.y, box.width, box.height).GetIntersects(tilemapTile.GetBox())) {
+                    if (new Box(positionTo + box.Position, box.Size).GetIntersects(tilemapTile.GetBox())) {
                         collision = true;
                         break;
                     }
                 }
 
                 if (!collision) {
-                    entity.position.X = xTo;
-                    entity.position.Y = yTo;
-
+                    entity.position = positionTo;
                     distanceMoved += distanceToMove;
                 } else {
                     break;

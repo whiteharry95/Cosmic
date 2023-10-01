@@ -1,7 +1,5 @@
 ﻿namespace Cosmic.Worlds {
     using Microsoft.Xna.Framework;
-    using Microsoft.Xna.Framework.Content;
-    using Cosmic.Entities.Characters.Enemies;
     using System.Collections.Generic;
 
     public static class WorldManager {
@@ -10,14 +8,10 @@
 
         public static Main main;
 
-        public static void Load(ContentManager contentManager) {
-            worlds = new List<World>();
-
-            main = new Main(800, 256);
-
-            worlds.Add(main);
-
-
+        public static void Generate() {
+            worlds = new List<World> {
+                (main = new Main(400, 400))
+            };
 
             main.Generate();
 

@@ -1,6 +1,5 @@
 ﻿namespace Cosmic.Tiles {
     using Microsoft.Xna.Framework;
-    using Microsoft.Xna.Framework.Content;
     using Microsoft.Xna.Framework.Graphics;
     using System;
 
@@ -19,9 +18,9 @@
             woodenPlatform = AddTile<WoodenPlatform>(2);
         }
 
-        public static void Load(ContentManager contentManager) {
+        public static void Generate() {
             for (int i = 0; i < tiles.Length; i++) {
-                tiles[i].Load(contentManager);
+                tiles[i].Generate();
             }
         }
 

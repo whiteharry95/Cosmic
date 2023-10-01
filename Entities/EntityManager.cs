@@ -6,6 +6,7 @@
     using System.Collections.Generic;
     using System;
     using System.Linq;
+    using Cosmic.Entities.Characters.Enemies;
 
     public static class EntityManager {
         public static List<Entity> entities;
@@ -14,6 +15,10 @@
 
         public static void Load(ContentManager contentManager) {
             entities = new List<Entity>();
+
+            player = AddEntity<Player>(new Vector2(WorldManager.worldCurrent.Width, WorldManager.worldCurrent.Height) / 2f);
+
+            AddEntity<Shooter>(player.position);
         }
 
         public static void Update(GameTime gameTime) {
@@ -60,10 +65,6 @@
 
         public static List<Entity> GetEntitiesInWorld(World world = null) {
             return entities.FindAll(entity => entity.world == (world ?? WorldManager.worldCurrent));
-        }
-
-        private static void SpawnPlayer() {
-            player = AddEntity<Player>(new Vector2(WorldManager.worldCurrent.Width, WorldManager.worldCurrent.Height) / 2f);
         }
     }
 }

@@ -1,6 +1,5 @@
 ﻿namespace Cosmic.Tiles {
     using Microsoft.Xna.Framework;
-    using Microsoft.Xna.Framework.Content;
     using Microsoft.Xna.Framework.Graphics;
     using Cosmic.Items;
 
@@ -19,7 +18,7 @@
 
         public bool wall = true;
 
-        public virtual void Load(ContentManager contentManager) {
+        public virtual void Generate() {
         }
 
         public virtual void Update(GameTime gameTime) {
