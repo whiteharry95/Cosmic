@@ -13,12 +13,12 @@
 
 #---------------------------------- Content ---------------------------------#
 
-#begin Fonts/Arial.spritefont
+#begin Fonts/ArialMedium.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor
 /processorParam:PremultiplyAlpha=True
 /processorParam:TextureFormat=Compressed
-/build:Fonts/Arial.spritefont
+/build:Fonts/ArialMedium.spritefont
 
 #begin Fonts/ArialSmall.spritefont
 /importer:FontDescriptionImporter
@@ -27,7 +27,7 @@
 /processorParam:TextureFormat=Compressed
 /build:Fonts/ArialSmall.spritefont
 
-#begin Textures/Beef.png
+#begin Textures/Characters/NPCs/Shooters/GreenShooter.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -37,9 +37,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Textures/Beef.png
+/build:Textures/Characters/NPCs/Shooters/GreenShooter.png
 
-#begin Textures/Bomb.png
+#begin Textures/Characters/Player.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -49,9 +49,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Textures/Bomb.png
+/build:Textures/Characters/Player.png
 
-#begin Textures/Cursor.png
+#begin Textures/Entities/Hitbox.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -61,9 +61,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Textures/Cursor.png
+/build:Textures/Entities/Hitbox.png
 
-#begin Textures/Gun.png
+#begin Textures/Entities/ItemDrop.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -73,9 +73,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Textures/Gun.png
+/build:Textures/Entities/ItemDrop.png
 
-#begin Textures/Hammer.png
+#begin Textures/Items/Drills/CopperDrill.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -85,9 +85,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Textures/Hammer.png
+/build:Textures/Items/Drills/CopperDrill.png
 
-#begin Textures/Hitbox.png
+#begin Textures/Items/Guns/MachineGun.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -97,9 +97,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Textures/Hitbox.png
+/build:Textures/Items/Guns/MachineGun.png
 
-#begin Textures/InventorySlot.png
+#begin Textures/Items/Swords/WoodenSword.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -109,31 +109,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Textures/InventorySlot.png
-
-#begin Textures/ItemDrop.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Textures/ItemDrop.png
-
-#begin Textures/Miner.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Textures/Miner.png
+/build:Textures/Items/Swords/WoodenSword.png
 
 #begin Textures/Pixel.png
 /importer:TextureImporter
@@ -147,7 +123,7 @@
 /processorParam:TextureFormat=Color
 /build:Textures/Pixel.png
 
-#begin Textures/Player.png
+#begin Textures/Projectiles/Bullets/CopperBullet.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -157,9 +133,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Textures/Player.png
+/build:Textures/Projectiles/Bullets/CopperBullet.png
 
-#begin Textures/Projectile.png
+#begin Textures/Tiles/Dirt.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -169,9 +145,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Textures/Projectile.png
+/build:Textures/Tiles/Dirt.png
 
-#begin Textures/Shield.png
+#begin Textures/Tiles/Stone.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -181,9 +157,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Textures/Shield.png
+/build:Textures/Tiles/Stone.png
 
-#begin Textures/Shooter.png
+#begin Textures/Tiles/TileLife0.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -193,9 +169,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Textures/Shooter.png
+/build:Textures/Tiles/TileLife0.png
 
-#begin Textures/Sword.png
+#begin Textures/Tiles/TileLife1.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -205,9 +181,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Textures/Sword.png
+/build:Textures/Tiles/TileLife1.png
 
-#begin Textures/Tile.png
+#begin Textures/Tiles/TileLife2.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -217,9 +193,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Textures/Tile.png
+/build:Textures/Tiles/TileLife2.png
 
-#begin Textures/TileLife0.png
+#begin Textures/Tiles/TileLife3.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -229,9 +205,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Textures/TileLife0.png
+/build:Textures/Tiles/TileLife3.png
 
-#begin Textures/TileLife1.png
+#begin Textures/UI/Cursor.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -241,9 +217,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Textures/TileLife1.png
+/build:Textures/UI/Cursor.png
 
-#begin Textures/TileLife2.png
+#begin Textures/UI/InventorySlot.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -253,9 +229,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Textures/TileLife2.png
+/build:Textures/UI/InventorySlot.png
 
-#begin Textures/TileLife3.png
+#begin Textures/UI/TileSelection.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -265,17 +241,5 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Textures/TileLife3.png
-
-#begin Textures/TileSelection.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Textures/TileSelection.png
+/build:Textures/UI/TileSelection.png
 

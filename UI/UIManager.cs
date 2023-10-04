@@ -11,6 +11,7 @@
         public static CharacterHealthBars characterHealthBars;
         public static DamageText damageTexts;
         public static PlayerInventory playerInventory;
+        public static PlayerBars playerBars;
         public static Cursor cursor;
 
         public static void Load(ContentManager contentManager) {
@@ -18,9 +19,16 @@
                 (tileSelections = new TileSelection()),
                 (characterHealthBars = new CharacterHealthBars()),
                 (damageTexts = new DamageText()),
+                (playerBars = new PlayerBars()),
                 (playerInventory = new PlayerInventory()),
                 (cursor = new Cursor())
             };
+        }
+
+        public static void EarlyUpdate(GameTime gameTime) {
+            foreach (UIElement uIElement in uIElements) {
+                uIElement.EarlyUpdate(gameTime);
+            }
         }
 
         public static void Update(GameTime gameTime) {

@@ -1,10 +1,10 @@
 ﻿namespace Cosmic.Tiles {
-    using Microsoft.Xna.Framework;
+    using Cosmic.Assets;
     using Cosmic.Items;
 
     public class Dirt : Tile {
-        public override void Generate() {
-            texture = TileManager.CreateTileTexture(Color.Brown);
+        public override void Load() {
+            texture = TextureManager.Tiles_Dirt;
 
             life = 15;
 

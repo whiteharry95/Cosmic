@@ -3,42 +3,42 @@
     using Microsoft.Xna.Framework.Graphics;
 
     public static class DrawUtilities {
-        public enum AlignmentHor {
+        public enum HorizontalAlignment {
             Left,
-            Middle,
+            Centre,
             Right
         }
 
-        public enum AlignmentVer {
+        public enum VerticalAlignment {
             Top,
             Middle,
             Bottom
         }
 
-        public static void DrawText(SpriteFont font, string text, Vector2 position, Color colour, AlignmentHor alignmentHor, AlignmentVer alignmentVer) {
+        public static void DrawText(SpriteFont font, string text, Vector2 position, Color colour, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment) {
             Vector2 size = font.MeasureString(text);
-            string[] lines = text.Split('\n');
+            string[] textLines = text.Split('\n');
 
-            foreach (string line in lines) {
+            foreach (string line in textLines) {
                 Vector2 lineSize = font.MeasureString(line);
                 Vector2 origin = Vector2.Zero;
 
-                switch (alignmentHor) {
-                    case AlignmentHor.Middle:
+                switch (horizontalAlignment) {
+                    case HorizontalAlignment.Centre:
                         origin.X += lineSize.X / 2f;
                         break;
 
-                    case AlignmentHor.Right:
+                    case HorizontalAlignment.Right:
                         origin.X += lineSize.X;
                         break;
                 }
 
-                switch (alignmentVer) {
-                    case AlignmentVer.Middle:
+                switch (verticalAlignment) {
+                    case VerticalAlignment.Middle:
                         origin.Y += size.Y / 2f;
                         break;
 
-                    case AlignmentVer.Bottom:
+                    case VerticalAlignment.Bottom:
                         origin.Y += size.Y;
                         break;
                 }

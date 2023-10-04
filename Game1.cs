@@ -1,6 +1,8 @@
 ﻿namespace Cosmic {
+    using Cosmic.NPCs;
     using Cosmic.Entities;
     using Cosmic.Items;
+    using Cosmic.Projectiles;
     using Cosmic.Tiles;
     using Cosmic.UI;
     using Cosmic.Worlds;
@@ -9,10 +11,9 @@
     using Microsoft.Xna.Framework.Input;
     using System;
     using System.Collections.Generic;
+    using Cosmic.Assets;
 
     public class Game1 : Game {
-        public const int tileSize = 16;
-
         public static GraphicsDevice graphicsDeviceStatic;
         public static GraphicsDeviceManager graphicsDeviceManager;
         public static SpriteBatch spriteBatch;
@@ -35,6 +36,8 @@
 
             TileManager.Init();
             ItemManager.Init();
+            ProjectileManager.Init();
+            NPCManager.Init();
 
             base.Initialize();
         }
@@ -42,10 +45,13 @@
         protected override void LoadContent() {
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            AssetManager.Load(Content);
+            TextureManager.Load(Content);
+            FontManager.Load(Content);
 
-            TileManager.Generate();
-            ItemManager.Generate();
+            TileManager.Load();
+            ItemManager.Load();
+            ProjectileManager.Load();
+            NPCManager.Load();
             WorldManager.Generate();
 
             EntityManager.Load(Content);
@@ -65,7 +71,8 @@
                 Restart();
             }
 
-            WorldManager.Update(gameTime);
+            UIManager.EarlyUpdate(gameTime);
+
             EntityManager.Update(gameTime);
             Camera.Update(gameTime);
             UIManager.Update(gameTime);
@@ -90,13 +97,19 @@
         private void Restart() {
             TileManager.Init();
             ItemManager.Init();
+            ProjectileManager.Init();
+            NPCManager.Init();
 
-            TileManager.Generate();
-            ItemManager.Generate();
+            TileManager.Load();
+            ItemManager.Load();
+            ProjectileManager.Load();
+            NPCManager.Load();
             WorldManager.Generate();
 
             EntityManager.Load(Content);
             UIManager.Load(Content);
+
+            Camera.lookSet = false;
         }
     }
 }

@@ -3,34 +3,30 @@
     using Cosmic.Tiles;
     using System;
     using System.Collections.Generic;
+    using Cosmic.TileMap;
 
     public class World {
-        public int Width => tilemap.Width * Game1.tileSize;
-        public int Height => tilemap.Height * Game1.tileSize;
+        public int Width => tileMap.Width * Tile.Size;
+        public int Height => tileMap.Height * Tile.Size;
 
-        public Tilemap tilemap;
-        public Tilemap tilemapWalls;
+        public TileMap tileMap;
+        public TileMap tileMapWalls;
 
         public List<Action> generationActions = new List<Action>();
 
         public float fallSpeed = 0.5f;
         public float fallSpeedMax = 32f;
 
-        public World(int tilemapWidth, int tilemapHeight) {
-            tilemap = new Tilemap(tilemapWidth, tilemapHeight, this);
+        public World(int width, int height) {
+            tileMap = new TileMap(width, height, this);
 
-            tilemapWalls = new Tilemap(tilemapWidth, tilemapHeight, this);
-            tilemapWalls.tilesBrightness = 0.4f;
-        }
-
-        public virtual void Update(GameTime gameTime) {
-            tilemapWalls.Update(gameTime);
-            tilemap.Update(gameTime);
+            tileMapWalls = new TileMap(width, height, this);
+            tileMapWalls.tileBrightness = 0.4f;
         }
 
         public virtual void Draw(GameTime gameTime) {
-            tilemapWalls.Draw(gameTime);
-            tilemap.Draw(gameTime);
+            tileMapWalls.Draw(gameTime);
+            tileMap.Draw(gameTime);
         }
 
         public void Generate() {

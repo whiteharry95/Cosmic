@@ -1,4 +1,5 @@
-﻿namespace Cosmic.Items {
+﻿namespace Cosmic.Items
+{
     public abstract class Item {
         public int id;
 
@@ -16,8 +17,9 @@
         public float holdLengthOffset;
         public float holdRotationOffset;
 
-        public virtual void Generate() {
-        }
+        public float displayRotation;
+
+        public abstract void Load();
 
         public virtual void OnUse() {
         }

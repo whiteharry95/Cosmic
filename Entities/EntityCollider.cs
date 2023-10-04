@@ -3,9 +3,10 @@
     using Cosmic.Tiles;
     using System;
     using System.Collections.Generic;
+    using Cosmic.TileMap;
 
     public class EntityCollider {
-        private const int tileRange = 12;
+        private const int TileRange = 12;
 
         public Entity entity;
         public Box box;
@@ -61,20 +62,14 @@
             return entities.Count > 0;
         }
 
-        public bool GetCollisionWithTiles(Vector2? offset = null, Predicate<TilemapTile> predicate = null) {
-            List<TilemapTile> tilemapTilesWithinRange = entity.world.tilemap.GetTilesWithinRange(Tilemap.GetWorldToTilePosition(entity.position + new Vector2(tileRange % 2f == 0f ? (Game1.tileSize / 2f) : 0f)), tileRange);
+        public bool GetCollisionWithTiles(Vector2? offset = null, Predicate<TileMapTile> predicate = null) {
+            List<TileMapTile> tileMapTilesWithinRange = entity.world.tileMap.GetTilesWithinRange(TileMap.GetWorldToTilePosition(entity.position + new Vector2(TileRange % 2f == 0f ? (Tile.Size / 2f) : 0f)), TileRange);
 
             Box boxOffset = new Box(entity.position + box.Position + (offset ?? Vector2.Zero), box.Size);
 
-            foreach (TilemapTile tilemapTile in tilemapTilesWithinRange) {
-                if (tilemapTile.Tile.platform) {
-                    if (entity.position.Y + box.Position.Y + box.height > tilemapTile.Y * Game1.tileSize) {
-                        continue;
-                    }
-                }
-
-                if (predicate?.Invoke(tilemapTile) ?? true) {
-                    if (boxOffset.GetIntersects(tilemapTile.GetBox())) {
+            foreach (TileMapTile tileMapTile in tileMapTilesWithinRange) {
+                if (predicate?.Invoke(tileMapTile) ?? true) {
+                    if (boxOffset.GetIntersects(tileMapTile.GetBox())) {
                         return true;
                     }
                 }
@@ -83,28 +78,22 @@
             return false;
         }
 
-        public bool GetCollisionWithTiles(out List<TilemapTile> tilemapTiles, Vector2? offset = null, Predicate<TilemapTile> predicate = null) {
-            tilemapTiles = new List<TilemapTile>();
+        public bool GetCollisionWithTiles(out List<TileMapTile> tileMapTiles, Vector2? offset = null, Predicate<TileMapTile> predicate = null) {
+            tileMapTiles = new List<TileMapTile>();
 
-            List<TilemapTile> tilemapTilesWithinRange = entity.world.tilemap.GetTilesWithinRange(Tilemap.GetWorldToTilePosition(entity.position + new Vector2(tileRange % 2f == 0f ? (Game1.tileSize / 2f) : 0f)), tileRange);
+            List<TileMapTile> tileMapTilesWithinRange = entity.world.tileMap.GetTilesWithinRange(TileMap.GetWorldToTilePosition(entity.position + new Vector2(TileRange % 2f == 0f ? (Tile.Size / 2f) : 0f)), TileRange);
 
             Box boxOffset = new Box(entity.position + box.Position + (offset ?? Vector2.Zero), box.Size);
 
-            foreach (TilemapTile tilemapTile in tilemapTilesWithinRange) {
-                if (tilemapTile.Tile.platform) {
-                    if (entity.position.Y + box.Position.Y + box.height > tilemapTile.Y * Game1.tileSize) {
-                        continue;
-                    }
-                }
-
-                if (predicate?.Invoke(tilemapTile) ?? true) {
-                    if (boxOffset.GetIntersects(tilemapTile.GetBox())) {
-                        tilemapTiles.Add(tilemapTile);
+            foreach (TileMapTile tileMapTile in tileMapTilesWithinRange) {
+                if (predicate?.Invoke(tileMapTile) ?? true) {
+                    if (boxOffset.GetIntersects(tileMapTile.GetBox())) {
+                        tileMapTiles.Add(tileMapTile);
                     }
                 }
             }
 
-            return tilemapTiles.Count > 0;
+            return tileMapTiles.Count > 0;
         }
 
         public void MakeContactWithTiles(float distance, int direction) {
@@ -169,10 +158,10 @@
 
                 bool collision = false;
 
-                List<TilemapTile> tilemapTilesWithinRange = entity.world.tilemap.GetTilesWithinRange(Tilemap.GetWorldToTilePosition(positionTo + new Vector2(tileRange % 2f == 0f ? (Game1.tileSize / 2f) : 0f)), tileRange);
+                List<TileMapTile> tileMapTilesWithinRange = entity.world.tileMap.GetTilesWithinRange(TileMap.GetWorldToTilePosition(positionTo + new Vector2(TileRange % 2f == 0f ? (Tile.Size / 2f) : 0f)), TileRange);
 
-                foreach (TilemapTile tilemapTile in tilemapTilesWithinRange) {
-                    if (new Box(positionTo + box.Position, box.Size).GetIntersects(tilemapTile.GetBox())) {
+                foreach (TileMapTile tileMapTile in tileMapTilesWithinRange) {
+                    if (new Box(positionTo + box.Position, box.Size).GetIntersects(tileMapTile.GetBox())) {
                         collision = true;
                         break;
                     }

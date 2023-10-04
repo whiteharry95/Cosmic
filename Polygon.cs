@@ -1,4 +1,5 @@
 ﻿namespace Cosmic {
+    using Cosmic.Utilities;
     using Microsoft.Xna.Framework;
 
     public class Polygon {
@@ -10,7 +11,7 @@
 
         public bool GetCollisionWithPolygon(Polygon polygon) {
             for (int i = 0; i < vertices.Length; i++) {
-                Vector2 edge = Vector2.Normalize(vertices[(i + 1) % vertices.Length] - vertices[i]);
+                Vector2 edge = MathUtilities.NormaliseVector2(vertices[(i + 1) % vertices.Length] - vertices[i]);
 
                 ProjectVerticesOntoEdge(vertices, edge, out float projectionMin, out float projectionMax);
                 ProjectVerticesOntoEdge(polygon.vertices, edge, out float polygonProjectionMin, out float polygonProjectionMax);
@@ -21,7 +22,7 @@
             }
 
             for (int i = 0; i < polygon.vertices.Length; i++) {
-                Vector2 edge = Vector2.Normalize(polygon.vertices[(i + 1) % polygon.vertices.Length] - polygon.vertices[i]);
+                Vector2 edge = MathUtilities.NormaliseVector2(polygon.vertices[(i + 1) % polygon.vertices.Length] - polygon.vertices[i]);
 
                 ProjectVerticesOntoEdge(vertices, edge, out float projectionMin, out float projectionMax);
                 ProjectVerticesOntoEdge(polygon.vertices, edge, out float polygonProjectionMin, out float polygonProjectionMax);

@@ -1,12 +1,20 @@
 ﻿namespace Cosmic.Entities {
     using Microsoft.Xna.Framework;
     using Cosmic.Worlds;
+    using Cosmic;
 
     public abstract class Entity {
+        public enum DrawLayer {
+            Player,
+            ItemDrops,
+            Projectiles,
+            Debug
+        }
+
         public Vector2 position;
         public Vector2 velocity;
 
-        public int drawPriority;
+        public DrawLayer drawLayer;
 
         public Sprite sprite;
         public EntityCollider collider;
@@ -20,7 +28,7 @@
         }
 
         public virtual void Draw(GameTime gameTime) {
-            sprite.Draw(position - Camera.position, 0f, 1f, 1f);
+            sprite.Draw(position - Camera.position);
         }
 
         public virtual void Destroy() {

@@ -6,7 +6,8 @@
     using System.Collections.Generic;
     using System;
     using System.Linq;
-    using Cosmic.Entities.Characters.Enemies;
+    using Cosmic.Entities.Characters.NPCs;
+    using Cosmic.NPCs;
 
     public static class EntityManager {
         public static List<Entity> entities;
@@ -18,7 +19,7 @@
 
             player = AddEntity<Player>(new Vector2(WorldManager.worldCurrent.Width, WorldManager.worldCurrent.Height) / 2f);
 
-            AddEntity<Shooter>(player.position);
+            AddEntity<ShooterEntity>(player.position + new Vector2(128f, 0f), preInitAction: shooterEntity => shooterEntity.nPC = NPCManager.greenShooter);
         }
 
         public static void Update(GameTime gameTime) {
@@ -30,7 +31,7 @@
         }
 
         public static void Draw(GameTime gameTime) {
-            Entity[] entitiesPreviousDrawOrdered = entities.OrderBy((Entity entity) => entity.drawPriority).ToArray();
+            Entity[] entitiesPreviousDrawOrdered = entities.OrderBy((Entity entity) => entity.drawLayer).ToArray();
 
             foreach (Entity entity in entitiesPreviousDrawOrdered) {
                 if (entity.world == WorldManager.worldCurrent) {
@@ -39,25 +40,14 @@
             }
         }
 
-        public static T AddEntity<T>(Vector2 position, World world = null) where T : Entity {
+        public static T AddEntity<T>(Vector2 position, World world = null, Action<T> preInitAction = null) where T : Entity {
             T entity = Activator.CreateInstance<T>();
             entity.position = position;
             entity.world = world ?? WorldManager.worldCurrent;
 
             entities.Add(entity);
 
-            entity.Init();
-
-            return entity;
-        }
-
-        public static Entity AddEntity(Type type, Vector2 position, World world = null) {
-            Entity entity = (Entity)Activator.CreateInstance(type);
-            entity.position = position;
-            entity.world = world ?? WorldManager.worldCurrent;
-
-            entities.Add(entity);
-
+            preInitAction?.Invoke(entity);
             entity.Init();
 
             return entity;

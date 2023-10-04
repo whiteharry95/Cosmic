@@ -10,15 +10,21 @@
     using System.Collections.Generic;
     using Cosmic.UI;
     using Cosmic.Inventory;
-    using System.Diagnostics;
+    using Cosmic.TileMap;
+    using Cosmic.UI.UIElements;
+    using Cosmic.Assets;
+    using Cosmic.Utilities;
+    using Microsoft.Xna.Framework.Graphics;
 
-    public class Player : CharacterEntity {
-        public Item ItemCurrent => inventory.slots[UIManager.playerInventory.hotbarSlotSelected, 0]?.item;
-        public int ItemUseTime { get; private set; }
+    public class Player : Character {
+        public Item ItemCurrent => inventory.slots[UIManager.playerInventory.hotBarSlotSelectedIndex]?.item;
 
+        public int itemUseTime;
         public float itemRotationOffset;
         public float itemRotationOffsetAxis = 1f;
         private float itemRotationOffsetSpeed = 0.5f;
+
+        public float itemDropThrowSpeed = 8f;
 
         public float moveSpeedChange = 0.6f;
         public float moveSpeedMax = 6f;
@@ -35,37 +41,34 @@
         private int dashTime;
         private int dashTimeMax = 12;
         private int dashBreakTime;
-        private int dashBreakTimeMax = 60;
+        private int dashBreakTimeMax = 45;
 
         public Inventory inventory;
 
         public List<Point> tileSelection = new List<Point>();
         public int tileSelectionSize = 4;
-        public int tileSelectionRange = 12;
+        public int tileSelectionRange = 16;
         public bool tileSelectionWalls;
 
         public override void Init() {
-            drawPriority = 1;
+            drawLayer = DrawLayer.Player;
 
             healthMax = 100;
             health = healthMax;
 
-            hungerMax = 100f;
-            hunger = hungerMax;
+            sprite = new Sprite(TextureManager.Characters_Player, Sprite.OriginPreset.MiddleCentre);
+            collider = new EntityCollider(this, new Box(-sprite.origin, sprite.Size));
 
-            invincibilityTimeMax = 15;
-
-            sprite = new Sprite(AssetManager.player, new Vector2(AssetManager.player.Width, AssetManager.player.Height) / 2f);
-            collider = new EntityCollider(this, new Box(-sprite.origin, sprite.Size.ToVector2()));
-
-            inventory = new Inventory(8, 5);
-            inventory.AddItem(ItemManager.gun);
-            inventory.AddItem(ItemManager.sword);
-            inventory.AddItem(ItemManager.miner);
+            inventory = new Inventory(PlayerInventory.RowSize * 5);
+            inventory.AddItem(ItemManager.stoneBlock, 950);
+            inventory.AddItem(ItemManager.stoneBlock, 51, 10);
+            inventory.AddItem(ItemManager.sword, 1);
+            inventory.AddItem(ItemManager.gun, 1);
+            inventory.AddItem(ItemManager.miner, 1);
         }
 
         public override void Update(GameTime gameTime) {
-            bool canFly = false;
+            bool canFly = true;
             bool keyHeldSpace = InputManager.GetKeyHeld(Keys.Space);
 
             int moveSpeedAxis = Convert.ToInt32(InputManager.GetKeyHeld(Keys.D)) - Convert.ToInt32(InputManager.GetKeyHeld(Keys.A));
@@ -141,37 +144,51 @@
 
             base.Update(gameTime);
 
-            if (InputManager.GetKeyHeld(Keys.S)) {
-                if (velocity.Y == 0f) {
-                    if (collider.GetCollisionWithTiles(new Vector2(0f, 0.5f), (TilemapTile tilemapTile) => tilemapTile.Tile.platform)) {
-                        if (!collider.GetCollisionWithTiles(new Vector2(0f, 0.5f), (TilemapTile tilemapTile) => !tilemapTile.Tile.platform)) {
-                            position.Y += 0.5f;
+            if (collider.GetCollisionWithEntities(out List<ItemDrop> itemDrops)) {
+                foreach (ItemDrop itemDrop in itemDrops) {
+                    if (itemDrop.pickupTime <= 0) {
+                        int quantity = inventory.AddItem(itemDrop.item, itemDrop.quantity);
+
+                        if (quantity > 0) {
+                            itemDrop.quantity = quantity;
+                        } else {
+                            itemDrop.Destroy();
                         }
                     }
                 }
             }
 
-            if (collider.GetCollisionWithEntities(out List<ItemDrop> itemDrops)) {
-                foreach (ItemDrop itemDrop in itemDrops) {
-                    inventory.AddItem(itemDrop.item, itemDrop.quantity);
-                    itemDrop.Destroy();
+            if (inventory.slots[UIManager.playerInventory.hotBarSlotSelectedIndex] != null) {
+                if (InputManager.GetKeyPressed(Keys.Q)) {
+                    EntityManager.AddEntity<ItemDrop>(position, world, itemDrop => {
+                        itemDrop.item = ItemCurrent;
+                        itemDrop.quantity = inventory.slots[UIManager.playerInventory.hotBarSlotSelectedIndex].quantity;
+
+                        itemDrop.velocity = itemDropThrowSpeed * MathUtilities.NormaliseVector2(InputManager.GetMousePosition() - position);
+
+                        itemDrop.pickupTime = itemDrop.pickupTimeMax;
+
+                        itemDrop.flip = InputManager.GetMousePosition().X < position.X ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+                    });
+
+                    inventory.RemoveItem(ItemCurrent, inventory.slots[UIManager.playerInventory.hotBarSlotSelectedIndex].quantity, UIManager.playerInventory.hotBarSlotSelectedIndex, true);
                 }
             }
 
             tileSelection.Clear();
 
+            tileSelectionWalls = InputManager.GetKeyHeld(Keys.LeftAlt);
+
             int tileSelectionSizeCapped = tileSelectionSize;
 
             if (ItemCurrent is BlockItem) {
-                int itemQuantity = inventory.GetItemQuantity(ItemCurrent);
-
-                while (tileSelectionSizeCapped * tileSelectionSizeCapped > itemQuantity) {
+                while (tileSelectionSizeCapped * tileSelectionSizeCapped > inventory.slots[UIManager.playerInventory.hotBarSlotSelectedIndex].quantity) {
                     tileSelectionSizeCapped--;
                 }
             }
 
-            Point tilePosition = Tilemap.GetWorldToTilePosition(position + new Vector2(tileSelectionRange % 2f == 0f ? (Game1.tileSize / 2f) : 0f));
-            Point mouseTilePosition = Tilemap.GetWorldToTilePosition(InputManager.GetMousePosition() + new Vector2(tileSelectionSizeCapped % 2f == 0f ? (Game1.tileSize / 2f) : 0f));
+            Point tilePosition = TileMap.GetWorldToTilePosition(position + new Vector2(tileSelectionRange % 2f == 0f ? (Tile.Size / 2f) : 0f));
+            Point mouseTilePosition = TileMap.GetWorldToTilePosition(InputManager.GetMousePosition() + new Vector2(tileSelectionSizeCapped % 2f == 0f ? (Tile.Size / 2f) : 0f));
 
             for (int y = mouseTilePosition.Y - (int)Math.Floor(tileSelectionSizeCapped / 2f); y < mouseTilePosition.Y + Math.Ceiling(tileSelectionSizeCapped / 2f); y++) {
                 for (int x = mouseTilePosition.X - (int)Math.Floor(tileSelectionSizeCapped / 2f); x < mouseTilePosition.X + Math.Ceiling(tileSelectionSizeCapped / 2f); x++) {
@@ -181,22 +198,18 @@
                 }
             }
 
-            if (ItemUseTime > 0) {
-                ItemUseTime--;
+            if (itemUseTime > 0) {
+                itemUseTime--;
             } else {
-                if (ItemCurrent != null) {
-                    if (InputManager.GetMouseLeftHeld()) {
-                        ItemUseTime = ItemCurrent.useTime;
+                if (ItemCurrent != null && !UIManager.playerInventory.open) {
+                    if (ItemCurrent.useHold ? InputManager.GetMouseLeftHeld() : InputManager.GetMouseLeftPressed()) {
+                        itemUseTime = ItemCurrent.useTime;
                         ItemCurrent.OnUse();
                     }
                 }
             }
 
             itemRotationOffset = ((ItemCurrent?.holdRotationOffset ?? 0f) == 0f) ? 0f : itemRotationOffset + (((ItemCurrent.holdRotationOffset * itemRotationOffsetAxis) - itemRotationOffset) * itemRotationOffsetSpeed);
-
-            if (InputManager.GetKeyPressed(Keys.LeftControl)) {
-                tileSelectionWalls = !tileSelectionWalls;
-            }
         }
 
         public override void Draw(GameTime gameTime) {
@@ -205,7 +218,7 @@
             Vector2 mousePosition = InputManager.GetMousePosition();
             float mouseDirection = (float)Math.Atan2(mousePosition.Y - position.Y, mousePosition.X - position.X);
 
-            ItemCurrent?.sprite?.Draw(position - Camera.position + (ItemCurrent.holdLengthOffset * new Vector2((float)Math.Cos(mouseDirection + itemRotationOffset), (float)Math.Sin(mouseDirection + itemRotationOffset))), mouseDirection + itemRotationOffset, 1f, 1f);
+            ItemCurrent?.sprite?.Draw(position - Camera.position + (ItemCurrent.holdLengthOffset * new Vector2((float)Math.Cos(mouseDirection + itemRotationOffset), (float)Math.Sin(mouseDirection + itemRotationOffset))), mouseDirection + itemRotationOffset);
         }
 
         public override bool Hurt(int damage, Vector2? force = null, Vector2? position = null) {

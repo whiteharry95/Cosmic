@@ -3,33 +3,47 @@
     using Cosmic;
     using System;
     using Cosmic.Items;
+    using Cosmic.Utilities;
+    using Microsoft.Xna.Framework.Graphics;
 
     public class ItemDrop : Entity {
         public Item item;
         public int quantity = 1;
 
-        public float fallSpeedMax = 40f;
+        public float moveSpeedChange = 0.25f;
 
         public bool pickup;
         public float pickupDistance = 80f;
         public float pickupSpeed = 10f;
+        public int pickupTime;
+        public int pickupTimeMax = 60;
+
+        public int shootTime;
+
+        public SpriteEffects flip;
 
         public override void Init() {
-            drawPriority = 2;
+            drawLayer = DrawLayer.ItemDrops;
 
-            sprite = new Sprite(AssetManager.itemDrop, new Vector2(AssetManager.itemDrop.Width, AssetManager.itemDrop.Height) / 2f);
-            collider = new EntityCollider(this, new Box(-sprite.origin, sprite.Size.ToVector2()));
+            sprite = new Sprite(item.sprite.texture, Sprite.OriginPreset.MiddleCentre);
+            collider = new EntityCollider(this, new Box(-sprite.origin / 2f, sprite.Size / 2f));
         }
 
         public override void Update(GameTime gameTime) {
             bool pickupPrevious = pickup;
 
-            if (EntityManager.player.GetExists() && EntityManager.player.world == world) {
-                if (Vector2.Distance(position, EntityManager.player.position) <= pickupDistance) {
-                    pickup = true;
+            if (pickupTime > 0) {
+                pickupTime--;
+            }
+
+            if (pickupTime <= 0) {
+                if (EntityManager.player.GetExists() && EntityManager.player.world == world) {
+                    if (Vector2.Distance(position, EntityManager.player.position) <= pickupDistance) {
+                        pickup = true;
+                    }
+                } else {
+                    pickup = false;
                 }
-            } else {
-                pickup = false;
             }
 
             if (pickup != pickupPrevious) {
@@ -37,9 +51,10 @@
             }
 
             if (pickup) {
-                velocity = Vector2.Normalize(EntityManager.player.position - position) * pickupSpeed;
+                velocity = MathUtilities.NormaliseVector2(EntityManager.player.position - position) * pickupSpeed;
             } else {
-                velocity.Y += Math.Min(world.fallSpeed, Math.Abs(fallSpeedMax - velocity.Y)) * Math.Sign(fallSpeedMax - velocity.Y);
+                velocity.X += Math.Min(moveSpeedChange, Math.Abs(velocity.X)) * -Math.Sign(velocity.X);
+                velocity.Y += Math.Min(world.fallSpeed, Math.Abs(world.fallSpeedMax - velocity.Y)) * Math.Sign(world.fallSpeedMax - velocity.Y);
 
                 if (velocity.X != 0f) {
                     if (collider.GetCollisionWithTiles(new Vector2(velocity.X, 0f))) {
@@ -63,6 +78,10 @@
             if (position.X < 0f || position.Y < 0f || position.X >= world.Width || position.Y >= world.Height) {
                 Destroy();
             }
+        }
+
+        public override void Draw(GameTime gameTime) {
+            sprite.Draw(position - Camera.position, scale: 0.5f, flip: flip, origin: item.sprite.Size / 2f);
         }
     }
 }
