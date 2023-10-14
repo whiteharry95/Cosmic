@@ -1,10 +1,9 @@
 ﻿namespace Cosmic.Items.Blocks {
     using Microsoft.Xna.Framework;
-    using Cosmic.Entities;
     using Cosmic.Entities.Characters;
     using Cosmic.Tiles;
-    using Cosmic.Worlds;
     using Cosmic.TileMap;
+    using Cosmic.Universes;
 
     public class BlockItem : Item {
         public Tile tile;
@@ -14,14 +13,22 @@
             showTileSelection = true;
         }
 
-        public override void OnUse() {
-            foreach (Point tilePosition in EntityManager.player.tileSelection) {
-                TileMap tileMap = EntityManager.player.tileSelectionWalls ? WorldManager.worldCurrent.tileMapWalls : WorldManager.worldCurrent.tileMap;
+        public override void OnPrimaryUse() {
+            Place(false);
+        }
+
+        public override void OnSecondaryUse() {
+            Place(true);
+        }
+
+        protected virtual void Place(bool wall) {
+            foreach (Point tilePosition in Game1.server.netPlayers[0].player.tileSelection) {
+                TileMap tileMap = wall ? UniverseManager.universeCurrent.worldCurrent.tileMapWalls : UniverseManager.universeCurrent.worldCurrent.tileMap;
 
                 if (tileMap.tiles[tilePosition.X, tilePosition.Y] == null) {
-                    if (!tileMap.GetTilePositionCollisionWithEntity<Character>(tilePosition) || EntityManager.player.tileSelectionWalls) {
+                    if (!tileMap.GetTilePositionCollisionWithEntity<Character>(tilePosition) || Game1.server.netPlayers[0].player.tileSelectionWalls) {
                         tileMap.tiles[tilePosition.X, tilePosition.Y] = new TileMapTile(tile, tileMap, tilePosition.X, tilePosition.Y);
-                        EntityManager.player.inventory.RemoveItem(this);
+                        Game1.server.netPlayers[0].player.inventory.RemoveItem(this);
                     }
                 }
             }

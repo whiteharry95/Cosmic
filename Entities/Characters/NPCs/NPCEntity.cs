@@ -6,7 +6,7 @@
 
         public override void Init() {
             sprite = nPC.sprite;
-            collider = new EntityCollider(this, new Box(-sprite.origin, sprite.Size));
+            collider = new EntityCollider(this);
 
             healthMax = nPC.health;
             health = healthMax;

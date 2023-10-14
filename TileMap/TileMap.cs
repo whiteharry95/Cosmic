@@ -5,9 +5,10 @@ namespace Cosmic.TileMap {
     using Cosmic.Entities;
     using System;
     using System.Collections.Generic;
-    using Cosmic.Worlds;
+    using Cosmic.Universes;
     using Cosmic;
     using Cosmic.Assets;
+    using Cosmic.Saving;
 
     public class TileMap {
         public int Width => tiles.GetLength(0);
@@ -24,20 +25,33 @@ namespace Cosmic.TileMap {
         }
 
         public void Draw(GameTime gameTime) {
-            Box cameraBox = Camera.GetBox();
-            Rectangle cameraTileRectangle = new Rectangle((int)Math.Floor(cameraBox.x / Tile.Size), (int)Math.Floor(cameraBox.y / Tile.Size), (int)Math.Ceiling(cameraBox.width / Tile.Size) + 1, (int)Math.Ceiling(cameraBox.height / Tile.Size) + 1);
+            //Rectangle cameraRectangle = Camera.GetRectangle();
+            //Rectangle cameraTileRectangle = new Rectangle((int)Math.Floor(cameraRectangle.X / Tile.Size), (int)Math.Floor(cameraRectangle.y / Tile.Size), (int)Math.Ceiling(cameraRectangle.width / Tile.Size) + 1, (int)Math.Ceiling(cameraRectangle.height / Tile.Size) + 1);
 
-            for (int y = Math.Max(cameraTileRectangle.Top, 0); y < Math.Min(cameraTileRectangle.Bottom, Height); y++) {
+            /*for (int y = Math.Max(cameraTileRectangle.Top, 0); y < Math.Min(cameraTileRectangle.Bottom, Height); y++) {
                 for (int x = Math.Max(cameraTileRectangle.Left, 0); x < Math.Min(cameraTileRectangle.Right, Width); x++) {
                     if (tiles[x, y] != null) {
-                        Game1.spriteBatch.Draw(tiles[x, y].tile.texture, (new Vector2(x, y) * Tile.Size) - Camera.position, new Color(tileBrightness, tileBrightness, tileBrightness));
+                        Game1.spriteBatch.Draw(tiles[x, y].tile.texture, (new Vector2(x, y) * Tile.Size) - Camera.position, new Microsoft.Xna.Framework.Color(tileBrightness, tileBrightness, tileBrightness));
 
                         if (tiles[x, y].life < tiles[x, y].tile.life) {
-                            Game1.spriteBatch.Draw(TextureManager.Tiles_TileLife[(int)((1f - (float)tiles[x, y].life / tiles[x, y].tile.life) * TextureManager.Tiles_TileLife.Length)], (new Vector2(x, y) * Tile.Size) - Camera.position, Color.White);
+                            Game1.spriteBatch.Draw(TextureManager.Tiles_TileLife[(int)((1f - (float)tiles[x, y].life / tiles[x, y].tile.life) * TextureManager.Tiles_TileLife.Length)], (new Vector2(x, y) * Tile.Size) - Camera.position, Microsoft.Xna.Framework.Color.White);
                         }
                     }
                 }
+            }*/
+        }
+
+        public SaveTileMap GetAsSaveTileMap() {
+            SaveTileMap saveTileMap = new SaveTileMap();
+            saveTileMap.tiles = new ushort[Width, Height];
+
+            for (int y = 0; y < Height; y++) {
+                for (int x = 0; x < Width; x++) {
+                    saveTileMap.tiles[x, y] = tiles[x, y].tile.id;
+                }
             }
+
+            return saveTileMap;
         }
 
         public TileMapTile GetTile(int x, int y) {
@@ -51,7 +65,7 @@ namespace Cosmic.TileMap {
         public bool GetTileCollisionWithEntity<T>(int wx, int wy) where T : Entity {
             foreach (Entity entity in EntityManager.entities) {
                 if (entity is T) {
-                    if (GetTile(wx, wy).GetBox().GetIntersects(entity.collider.GetBoxReal())) {
+                    if (GetTile(wx, wy).GetPolygon().GetCollisionWithPolygon(entity.collider.polygon)) {
                         return true;
                     }
                 }
@@ -65,9 +79,11 @@ namespace Cosmic.TileMap {
         }
 
         public bool GetTilePositionCollisionWithEntity<T>(int x, int y) where T : Entity {
+            Polygon polygon = new Polygon(() => Polygon.GetRectangleVertices(new Vector2(Tile.Size)), () => new Vector2(x, y));
+
             foreach (Entity entity in EntityManager.entities) {
                 if (entity is T) {
-                    if (new Box(x * Tile.Size, y * Tile.Size, Tile.Size, Tile.Size).GetIntersects(entity.collider.GetBoxReal())) {
+                    if (polygon.GetCollisionWithPolygon(entity.collider.polygon)) {
                         return true;
                     }
                 }
@@ -96,7 +112,7 @@ namespace Cosmic.TileMap {
             return tiles;
         }
 
-        public List<TileMapTile> GetTilesWithinRange(Point centrePosition, int range) {
+        public List<TileMapTile> GetTilesWithinRange(Microsoft.Xna.Framework.Point centrePosition, int range) {
             return GetTilesWithinRange(centrePosition.X, centrePosition.Y, range);
         }
 

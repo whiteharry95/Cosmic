@@ -22,7 +22,7 @@
 
         public static T AddProjectile<T>(bool load = true) where T : Projectile {
             T projectile = Activator.CreateInstance<T>();
-            projectile.id = projectiles.Count;
+            projectile.id = (ushort)projectiles.Count;
 
             if (load) {
                 projectile.Load();

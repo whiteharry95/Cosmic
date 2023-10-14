@@ -23,7 +23,7 @@
 
         public static T AddTile<T>(bool load = false) where T : Tile {
             T tile = Activator.CreateInstance<T>();
-            tile.id = tiles.Count;
+            tile.id = (ushort)tiles.Count;
 
             if (load) {
                 tile.Load();

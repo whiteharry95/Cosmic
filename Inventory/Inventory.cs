@@ -1,6 +1,8 @@
 ﻿using Cosmic.Items;
+using System;
 
 namespace Cosmic.Inventory {
+    [Serializable]
     public class Inventory {
         public InventorySlot[] slots;
 
@@ -48,7 +50,7 @@ namespace Cosmic.Inventory {
                     if (slots[s]?.item == item) {
                         slots[s].quantity--;
 
-                        if (slots[s].quantity <= 0) {
+                        if (slots[s].quantity == 0) {
                             slots[s] = null;
                             break;
                         }

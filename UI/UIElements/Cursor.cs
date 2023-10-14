@@ -17,11 +17,11 @@
             text = "";
 
             if (UIManager.playerInventory.open && UIManager.playerInventory.slotSelectedIndex != -1) {
-                if (EntityManager.player.inventory.slots[UIManager.playerInventory.slotSelectedIndex] != null) {
-                    text = $"{EntityManager.player.inventory.slots[UIManager.playerInventory.slotSelectedIndex].item.name}";
+                if (Game1.server.netPlayers[0].player.inventory.slots[UIManager.playerInventory.slotSelectedIndex] != null) {
+                    text = $"{Game1.server.netPlayers[0].player.inventory.slots[UIManager.playerInventory.slotSelectedIndex].item.name}";
 
-                    if (EntityManager.player.inventory.slots[UIManager.playerInventory.slotSelectedIndex].quantity > 1) {
-                        text += $" ({EntityManager.player.inventory.slots[UIManager.playerInventory.slotSelectedIndex].quantity})";
+                    if (Game1.server.netPlayers[0].player.inventory.slots[UIManager.playerInventory.slotSelectedIndex].quantity > 1) {
+                        text += $" ({Game1.server.netPlayers[0].player.inventory.slots[UIManager.playerInventory.slotSelectedIndex].quantity})";
                     }
                 }
             }

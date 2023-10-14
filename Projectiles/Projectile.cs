@@ -1,7 +1,7 @@
 ﻿namespace Cosmic.Projectiles
 {
     public abstract class Projectile {
-        public int id;
+        public ushort id;
 
         public Sprite sprite;
 

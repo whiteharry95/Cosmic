@@ -1,4 +1,4 @@
-﻿namespace Cosmic.Items.Drills {
+﻿namespace Cosmic.Items.Tools.Drills {
     using Cosmic.Assets;
 
     public class CopperDrill : Drill {

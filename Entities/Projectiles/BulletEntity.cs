@@ -27,7 +27,7 @@
                 if (collider.GetCollisionWithEntities(out List<Character> characters)) {
                     foreach (Character character in characters) {
                         if (character is Player == enemy) {
-                            character.Hurt(damage, MathUtilities.NormaliseVector2(velocity) * strength, new Vector2(Math.Clamp(character.position.X, position.X + collider.box.Left, position.X + collider.box.Right), Math.Clamp(character.position.Y, position.Y + collider.box.Top, position.Y + collider.box.Bottom)));
+                            //character.Hurt(damage, MathUtilities.NormaliseVector2(velocity) * strength, new Vector2(Math.Clamp(character.position.X, position.X + collider.polygon.Left, position.X + collider.polygon.Right), Math.Clamp(character.position.Y, position.Y + collider.polygon.Top, position.Y + collider.polygon.Bottom)));
                             destroy = true;
                         }
                     }

@@ -17,13 +17,13 @@
 
             if (velocity.X != 0f) {
                 if (collider.GetCollisionWithTiles(new Vector2(velocity.X, 0f))) {
-                    collider.MakeContactWithTiles(Math.Abs(velocity.X), velocity.X >= 0f ? 0 : 2);
+                    collider.MakeContactWithTiles(Math.Abs(velocity.X), velocity.X >= 0f ? MathUtilities.Direction.Right : MathUtilities.Direction.Left);
                     velocity.X = 0f;
                 }
             }
 
             if (collider.GetCollisionWithTiles(new Vector2(0f, velocity.Y))) {
-                collider.MakeContactWithTiles(Math.Abs(velocity.Y), velocity.Y >= 0f ? 3 : 1);
+                collider.MakeContactWithTiles(Math.Abs(velocity.Y), velocity.Y >= 0f ? MathUtilities.Direction.Down : MathUtilities.Direction.Up);
                 velocity.Y = 0f;
             }
 
@@ -36,7 +36,7 @@
             if (shootTime < nPC.shootTime) {
                 shootTime++;
             } else {
-                Vector2 bulletDirection = MathUtilities.NormaliseVector2(EntityManager.player.position - position);
+                Vector2 bulletDirection = MathUtilities.NormaliseVector2(Game1.server.netPlayers[0].player.position - position);
 
                 if (bulletDirection != Vector2.Zero) {
                     BulletEntity bullet = EntityManager.AddEntity<BulletEntity>(position, world, projectileEntity => projectileEntity.projectile = ProjectileManager.copperBullet);

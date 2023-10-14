@@ -4,8 +4,6 @@
     using System;
     using System.Collections.Generic;
     using Cosmic.TileMap;
-    using Cosmic.NPCs;
-    using Cosmic.Entities.Characters.NPCs;
     using Cosmic.Assets;
 
     public class Hitbox : Entity {
@@ -18,7 +16,7 @@
             drawLayer = DrawLayer.Debug;
 
             sprite = new Sprite(TextureManager.Entities_Hitbox, Sprite.OriginPreset.MiddleCentre);
-            collider = new EntityCollider(this, new Box(-sprite.origin, sprite.Size));
+            collider = new EntityCollider(this);
         }
 
         public override void Update(GameTime gameTime) {
@@ -33,7 +31,7 @@
             if (collider.GetCollisionWithEntities(out List<Character> characters)) {
                 foreach (Character character in characters) {
                     if (character is Player == enemy) {
-                        character.Hurt(damage, force, new Vector2(Math.Clamp(character.position.X, position.X + collider.box.Left, position.X + collider.box.Right), Math.Clamp(character.position.Y, position.Y + collider.box.Top, position.Y + collider.box.Bottom)));
+                        //character.Hurt(damage, force, new Vector2(Math.Clamp(character.position.X, position.X + collider.polygon.Left, position.X + collider.polygon.Right), Math.Clamp(character.position.Y, position.Y + collider.polygon.Top, position.Y + collider.polygon.Bottom)));
                     }
                 }
             }

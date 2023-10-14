@@ -22,7 +22,7 @@
 
         public static T AddEnemy<T>(bool load = true) where T : NPC {
             T enemy = Activator.CreateInstance<T>();
-            enemy.id = nPCs.Count;
+            enemy.id = (ushort)nPCs.Count;
 
             if (load) {
                 enemy.Load();

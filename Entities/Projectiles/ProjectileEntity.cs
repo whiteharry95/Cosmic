@@ -14,7 +14,7 @@
             drawLayer = DrawLayer.Projectiles;
 
             sprite = projectile.sprite;
-            collider = new EntityCollider(this, new Box(-sprite.origin, sprite.Size));
+            collider = new EntityCollider(this);
         }
     }
 }

@@ -13,7 +13,9 @@
 
         public static Texture2D[] Tiles_TileLife;
 
-        public static Texture2D Textures_Projectiles_Bullets_CopperBullet;
+        public static Texture2D WorldObjects_Rock;
+
+        public static Texture2D Projectiles_Bullets_CopperBullet;
 
         public static Texture2D UI_Cursor;
         public static Texture2D UI_TileSelection;
@@ -42,7 +44,9 @@
                 contentManager.Load<Texture2D>("Textures/Tiles/TileLife3")
             };
 
-            Textures_Projectiles_Bullets_CopperBullet = contentManager.Load<Texture2D>("Textures/Projectiles/Bullets/CopperBullet");
+            WorldObjects_Rock = contentManager.Load<Texture2D>("Textures/WorldObjects/Rock");
+
+            Projectiles_Bullets_CopperBullet = contentManager.Load<Texture2D>("Textures/Projectiles/Bullets/CopperBullet");
 
             UI_Cursor = contentManager.Load<Texture2D>("Textures/UI/Cursor");
             UI_InventorySlot = contentManager.Load<Texture2D>("Textures/UI/InventorySlot");

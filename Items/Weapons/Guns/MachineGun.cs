@@ -1,4 +1,4 @@
-﻿namespace Cosmic.Items.Guns {
+﻿namespace Cosmic.Items.Weapons.Guns {
     using Cosmic.Assets;
 
     public class MachineGun : Gun {

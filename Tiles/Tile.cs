@@ -5,11 +5,11 @@
     public class Tile {
         public const int Size = 16;
 
-        public int id;
+        public ushort id;
 
         public Texture2D texture;
 
-        public byte life;
+        public ushort life;
 
         public Item item;
 

@@ -1,5 +1,4 @@
 ﻿namespace Cosmic.Items.Blocks {
-    using Microsoft.Xna.Framework;
     using Cosmic.Tiles;
 
     public class StoneBlock : BlockItem {

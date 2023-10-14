@@ -5,13 +5,14 @@
     using Cosmic.Projectiles;
     using Cosmic.Tiles;
     using Cosmic.UI;
-    using Cosmic.Worlds;
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Graphics;
     using Microsoft.Xna.Framework.Input;
     using System;
     using System.Collections.Generic;
     using Cosmic.Assets;
+    using Cosmic.WorldObjects;
+    using System.Net;
 
     public class Game1 : Game {
         public static GraphicsDevice graphicsDeviceStatic;
@@ -21,6 +22,8 @@
         public static Random random = new Random();
 
         public static List<Texture2D> texturesToUnload = new List<Texture2D>();
+
+        public static Server.Server server = new Server.Server(IPAddress.Parse("127.0.0.1"), 13000);
 
         public Game1() {
             graphicsDeviceManager = new GraphicsDeviceManager(this);
@@ -35,9 +38,12 @@
             graphicsDeviceStatic = GraphicsDevice;
 
             TileManager.Init();
+            WorldObjectManager.Init();
             ItemManager.Init();
             ProjectileManager.Init();
             NPCManager.Init();
+
+            server.Start();
 
             base.Initialize();
         }
@@ -49,10 +55,10 @@
             FontManager.Load(Content);
 
             TileManager.Load();
+            WorldObjectManager.Load();
             ItemManager.Load();
             ProjectileManager.Load();
             NPCManager.Load();
-            WorldManager.Generate();
 
             EntityManager.Load(Content);
             UIManager.Load(Content);
@@ -77,6 +83,8 @@
             Camera.Update(gameTime);
             UIManager.Update(gameTime);
 
+            server.Update();
+
             base.Update(gameTime);
         }
 
@@ -85,7 +93,6 @@
 
             spriteBatch.Begin(samplerState: SamplerState.PointClamp);
 
-            WorldManager.Draw(gameTime);
             EntityManager.Draw(gameTime);
             UIManager.Draw(gameTime);
 
@@ -96,15 +103,16 @@
 
         private void Restart() {
             TileManager.Init();
+            WorldObjectManager.Init();
             ItemManager.Init();
             ProjectileManager.Init();
             NPCManager.Init();
 
             TileManager.Load();
+            WorldObjectManager.Load();
             ItemManager.Load();
             ProjectileManager.Load();
             NPCManager.Load();
-            WorldManager.Generate();
 
             EntityManager.Load(Content);
             UIManager.Load(Content);

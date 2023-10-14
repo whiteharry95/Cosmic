@@ -4,25 +4,21 @@
     using System;
     using System.Collections.Generic;
     using Cosmic.TileMap;
+    using Cosmic.Utilities;
+    using Cosmic;
 
     public class EntityCollider {
         private const int TileRange = 12;
 
         public Entity entity;
-        public Box box;
+        public Polygon polygon;
 
-        public EntityCollider(Entity entity, Box box) {
+        public EntityCollider(Entity entity) {
             this.entity = entity;
-            this.box = box;
-        }
-
-        public Box GetBoxReal() {
-            return new Box(entity.position + box.Position, box.Size);
+            polygon = new Polygon(() => Polygon.GetRectangleVertices(entity.sprite.mask.Size.ToVector2()), () => entity.position, () => entity.rotation, () => entity.scale, () => entity.sprite.origin);
         }
 
         public bool GetCollisionWithEntities<T>(Vector2? offset = null) where T : Entity {
-            Box boxOffset = new Box(entity.position + box.Position + (offset ?? Vector2.Zero), box.Size);
-
             List<Entity> entitiesInWorld = EntityManager.GetEntitiesInWorld(entity.world);
 
             foreach (Entity entity in entitiesInWorld) {
@@ -31,7 +27,7 @@
                 }
 
                 if (entity is T) {
-                    if (boxOffset.GetIntersects(entity.collider.GetBoxReal())) {
+                    if (polygon.GetCollisionWithPolygon(entity.collider.polygon, offset)) {
                         return true;
                     }
                 }
@@ -43,8 +39,6 @@
         public bool GetCollisionWithEntities<T>(out List<T> entities, Vector2? offset = null) where T : Entity {
             entities = new List<T>();
 
-            Box boxOffset = new Box(entity.position + box.Position + (offset ?? Vector2.Zero), box.Size);
-
             List<Entity> entitiesInWorld = EntityManager.GetEntitiesInWorld(entity.world);
 
             foreach (Entity entity in entitiesInWorld) {
@@ -53,7 +47,7 @@
                 }
 
                 if (entity is T) {
-                    if (boxOffset.GetIntersects(entity.collider.GetBoxReal())) {
+                    if (polygon.GetCollisionWithPolygon(entity.collider.polygon, offset)) {
                         entities.Add(entity as T);
                     }
                 }
@@ -65,11 +59,9 @@
         public bool GetCollisionWithTiles(Vector2? offset = null, Predicate<TileMapTile> predicate = null) {
             List<TileMapTile> tileMapTilesWithinRange = entity.world.tileMap.GetTilesWithinRange(TileMap.GetWorldToTilePosition(entity.position + new Vector2(TileRange % 2f == 0f ? (Tile.Size / 2f) : 0f)), TileRange);
 
-            Box boxOffset = new Box(entity.position + box.Position + (offset ?? Vector2.Zero), box.Size);
-
             foreach (TileMapTile tileMapTile in tileMapTilesWithinRange) {
                 if (predicate?.Invoke(tileMapTile) ?? true) {
-                    if (boxOffset.GetIntersects(tileMapTile.GetBox())) {
+                    if (polygon.GetCollisionWithPolygon(tileMapTile.GetPolygon(), offset)) {
                         return true;
                     }
                 }
@@ -83,11 +75,9 @@
 
             List<TileMapTile> tileMapTilesWithinRange = entity.world.tileMap.GetTilesWithinRange(TileMap.GetWorldToTilePosition(entity.position + new Vector2(TileRange % 2f == 0f ? (Tile.Size / 2f) : 0f)), TileRange);
 
-            Box boxOffset = new Box(entity.position + box.Position + (offset ?? Vector2.Zero), box.Size);
-
             foreach (TileMapTile tileMapTile in tileMapTilesWithinRange) {
                 if (predicate?.Invoke(tileMapTile) ?? true) {
-                    if (boxOffset.GetIntersects(tileMapTile.GetBox())) {
+                    if (polygon.GetCollisionWithPolygon(tileMapTile.GetPolygon(), offset)) {
                         tileMapTiles.Add(tileMapTile);
                     }
                 }
@@ -96,14 +86,14 @@
             return tileMapTiles.Count > 0;
         }
 
-        public void MakeContactWithTiles(float distance, int direction) {
+        public void MakeContactWithTiles(float distance, MathUtilities.Direction direction) {
+            Vector2 positionChange = Vector2.Zero;
+
             for (float distanceMoved = 0f; distanceMoved < distance;) {
                 float distanceToMove = Math.Min(0.5f, distance - distanceMoved);
 
-                Vector2 positionTo = new Vector2(entity.position.X, entity.position.Y);
-
                 switch (direction) {
-                    case 0:
+                    case MathUtilities.Direction.Right:
                         if (entity.position.X != Math.Ceiling(entity.position.X)) {
                             float offset = (float)(Math.Ceiling(entity.position.X) - entity.position.X);
 
@@ -112,11 +102,11 @@
                             }
                         }
 
-                        positionTo.X += distanceToMove;
+                        positionChange.X += distanceToMove;
 
                         break;
 
-                    case 1:
+                    case MathUtilities.Direction.Up:
                         if (entity.position.Y != Math.Floor(entity.position.Y)) {
                             float offset = (float)(entity.position.Y - Math.Floor(entity.position.Y));
 
@@ -125,11 +115,11 @@
                             }
                         }
 
-                        positionTo.Y -= distanceToMove;
+                        positionChange.Y -= distanceToMove;
 
                         break;
 
-                    case 2:
+                    case MathUtilities.Direction.Left:
                         if (entity.position.X != Math.Floor(entity.position.X)) {
                             float offset = (float)(entity.position.X - Math.Floor(entity.position.X));
 
@@ -138,11 +128,11 @@
                             }
                         }
 
-                        positionTo.X -= distanceToMove;
+                        positionChange.X -= distanceToMove;
 
                         break;
 
-                    case 3:
+                    case MathUtilities.Direction.Down:
                         if (entity.position.Y != Math.Ceiling(entity.position.Y)) {
                             float offset = (float)(Math.Ceiling(entity.position.Y) - entity.position.Y);
 
@@ -151,24 +141,24 @@
                             }
                         }
 
-                        positionTo.Y += distanceToMove;
+                        positionChange.Y += distanceToMove;
 
                         break;
                 }
 
                 bool collision = false;
 
-                List<TileMapTile> tileMapTilesWithinRange = entity.world.tileMap.GetTilesWithinRange(TileMap.GetWorldToTilePosition(positionTo + new Vector2(TileRange % 2f == 0f ? (Tile.Size / 2f) : 0f)), TileRange);
+                List<TileMapTile> tileMapTilesWithinRange = entity.world.tileMap.GetTilesWithinRange(TileMap.GetWorldToTilePosition(positionChange + new Vector2(TileRange % 2f == 0f ? (Tile.Size / 2f) : 0f)), TileRange);
 
                 foreach (TileMapTile tileMapTile in tileMapTilesWithinRange) {
-                    if (new Box(positionTo + box.Position, box.Size).GetIntersects(tileMapTile.GetBox())) {
+                    if (polygon.GetCollisionWithPolygon(tileMapTile.GetPolygon(), positionChange)) {
                         collision = true;
                         break;
                     }
                 }
 
                 if (!collision) {
-                    entity.position = positionTo;
+                    entity.position += positionChange;
                     distanceMoved += distanceToMove;
                 } else {
                     break;

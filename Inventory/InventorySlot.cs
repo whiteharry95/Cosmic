@@ -1,6 +1,8 @@
 ﻿namespace Cosmic.Inventory {
     using Cosmic.Items;
+    using System;
 
+    [Serializable]
     public class InventorySlot {
         public Item item;
         public int quantity;

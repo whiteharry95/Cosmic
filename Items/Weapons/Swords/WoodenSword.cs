@@ -1,4 +1,4 @@
-﻿namespace Cosmic.Items.Swords {
+﻿namespace Cosmic.Items.Weapons.Swords {
     using Cosmic.Assets;
     using Microsoft.Xna.Framework;
 

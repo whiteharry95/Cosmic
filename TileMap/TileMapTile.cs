@@ -3,6 +3,7 @@
 namespace Cosmic.TileMap {
     using Microsoft.Xna.Framework;
     using Cosmic.Entities;
+    using Cosmic;
 
     public class TileMapTile {
         public Tile tile;
@@ -12,7 +13,7 @@ namespace Cosmic.TileMap {
         public int x;
         public int y;
 
-        public byte life;
+        public ushort life;
 
         public TileMapTile(Tile tile, TileMap tileMap, int x, int y) {
             this.tile = tile;
@@ -38,8 +39,8 @@ namespace Cosmic.TileMap {
             }
         }
 
-        public Box GetBox() {
-            return new Box(x * Tile.Size, y * Tile.Size, Tile.Size, Tile.Size);
+        public Polygon GetPolygon() {
+            return new Polygon(() => Polygon.GetRectangleVertices(new Vector2(Tile.Size)), () => new Vector2(x, y) * Tile.Size);
         }
     }
 }

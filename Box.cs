@@ -1,8 +1,7 @@
 ﻿namespace Cosmic {
     using Microsoft.Xna.Framework;
-    using System;
 
-    public class Box {
+    /*public class Box {
         public Vector2 Position {
             get => new Vector2(x, y);
 
@@ -55,9 +54,5 @@
         public bool GetIntersects(Box box) {
             return Left < box.Right && Top < box.Bottom && Right > box.Left && Bottom > box.Top;
         }
-
-        public bool GetIntersectsCircle(Vector2 position, float radius) {
-            return Vector2.Distance(Position, new Vector2(Math.Clamp(position.X, Left, Right), Math.Clamp(position.Y, Top, Bottom))) <= radius;
-        }
-    }
+    }*/
 }

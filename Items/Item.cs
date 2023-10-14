@@ -1,7 +1,6 @@
-﻿namespace Cosmic.Items
-{
+﻿namespace Cosmic.Items {
     public abstract class Item {
-        public int id;
+        public ushort id;
 
         public string name;
 
@@ -21,7 +20,10 @@
 
         public abstract void Load();
 
-        public virtual void OnUse() {
+        public virtual void OnPrimaryUse() {
+        }
+
+        public virtual void OnSecondaryUse() {
         }
     }
 }

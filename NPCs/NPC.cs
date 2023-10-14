@@ -1,7 +1,6 @@
-﻿namespace Cosmic.NPCs
-{
+﻿namespace Cosmic.NPCs {
     public abstract class NPC {
-        public int id;
+        public ushort id;
 
         public string name;
 
