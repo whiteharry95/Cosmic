@@ -1,5 +1,6 @@
 ﻿namespace Cosmic.Utilities {
     using Microsoft.Xna.Framework;
+    using System;
 
     public static class MathUtilities {
         public enum Direction {
@@ -9,7 +10,7 @@
             Down
         }
 
-        public static Vector2 NormaliseVector2(Vector2 vector2) {
+        public static Vector2 GetNormalisedVector2(Vector2 vector2) {
             vector2 = Vector2.Normalize(vector2);
 
             if (float.IsNaN(vector2.X) || float.IsNaN(vector2.Y)) {
@@ -17,6 +18,10 @@
             }
 
             return vector2;
+        }
+
+        public static float GetDirectionBetweenPositions(Vector2 positionA, Vector2 positionB) {
+            return MathF.Atan2(positionB.Y - positionA.Y, positionB.X - positionA.X);
         }
     }
 }

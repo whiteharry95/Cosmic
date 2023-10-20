@@ -5,6 +5,8 @@
         public T nPC;
 
         public override void Init() {
+            drawLayer = DrawLayer.NPCs;
+
             sprite = nPC.sprite;
             collider = new EntityCollider(this);
 

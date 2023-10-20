@@ -12,7 +12,7 @@
     using System.Collections.Generic;
     using Cosmic.Assets;
     using Cosmic.WorldObjects;
-    using System.Net;
+    using Cosmic.Worlds;
 
     public class Game1 : Game {
         public static GraphicsDevice graphicsDeviceStatic;
@@ -22,8 +22,6 @@
         public static Random random = new Random();
 
         public static List<Texture2D> texturesToUnload = new List<Texture2D>();
-
-        public static Server.Server server = new Server.Server(IPAddress.Parse("127.0.0.1"), 13000);
 
         public Game1() {
             graphicsDeviceManager = new GraphicsDeviceManager(this);
@@ -42,8 +40,7 @@
             ItemManager.Init();
             ProjectileManager.Init();
             NPCManager.Init();
-
-            server.Start();
+            EntityManager.Init();
 
             base.Initialize();
         }
@@ -60,8 +57,10 @@
             ProjectileManager.Load();
             NPCManager.Load();
 
-            EntityManager.Load(Content);
-            UIManager.Load(Content);
+            WorldManager.Load();
+            WorldManager.Generate();
+
+            UIManager.Load();
         }
 
         protected override void UnloadContent() {
@@ -71,19 +70,18 @@
         }
 
         protected override void Update(GameTime gameTime) {
-            InputManager.Update(gameTime);
+            InputManager.Update();
 
             if (InputManager.GetKeyPressed(Keys.R)) {
                 Restart();
             }
 
-            UIManager.EarlyUpdate(gameTime);
+            UIManager.EarlyUpdate();
 
-            EntityManager.Update(gameTime);
-            Camera.Update(gameTime);
-            UIManager.Update(gameTime);
-
-            server.Update();
+            EntityManager.Update();
+            WorldManager.Update();
+            Camera.Update();
+            UIManager.Update();
 
             base.Update(gameTime);
         }
@@ -91,13 +89,19 @@
         protected override void Draw(GameTime gameTime) {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            spriteBatch.Begin(samplerState: SamplerState.PointClamp);
+            spriteBatch.Begin(samplerState: SamplerState.PointClamp, transformMatrix: Matrix.CreateTranslation(new Vector3(-Camera.position, 0f)) * Matrix.CreateScale(new Vector3(new Vector2(Camera.Scale), 0f)));
 
-            EntityManager.Draw(gameTime);
-            UIManager.Draw(gameTime);
+            WorldManager.Draw();
+            EntityManager.Draw();
 
             spriteBatch.End();
-
+            
+            spriteBatch.Begin(samplerState: SamplerState.PointClamp);
+            
+            UIManager.Draw();
+            
+            spriteBatch.End();
+            
             base.Draw(gameTime);
         }
 
@@ -107,6 +111,7 @@
             ItemManager.Init();
             ProjectileManager.Init();
             NPCManager.Init();
+            EntityManager.Init();
 
             TileManager.Load();
             WorldObjectManager.Load();
@@ -114,8 +119,10 @@
             ProjectileManager.Load();
             NPCManager.Load();
 
-            EntityManager.Load(Content);
-            UIManager.Load(Content);
+            WorldManager.Load();
+            WorldManager.Generate();
+
+            UIManager.Load();
 
             Camera.lookSet = false;
         }

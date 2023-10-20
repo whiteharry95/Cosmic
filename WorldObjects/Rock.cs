@@ -9,6 +9,8 @@
             life = 45;
 
             item = ItemManager.rock;
+
+            placeType = PlaceType.Floor;
         }
     }
 }

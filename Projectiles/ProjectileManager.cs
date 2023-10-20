@@ -11,7 +11,7 @@
         public static void Init() {
             projectiles = new List<Projectile>();
 
-            copperBullet = AddProjectile<CopperBullet>(false);
+            copperBullet = AddProjectile<CopperBullet>();
         }
 
         public static void Load() {
@@ -20,7 +20,7 @@
             }
         }
 
-        public static T AddProjectile<T>(bool load = true) where T : Projectile {
+        public static T AddProjectile<T>(bool load = false) where T : Projectile {
             T projectile = Activator.CreateInstance<T>();
             projectile.id = (ushort)projectiles.Count;
 

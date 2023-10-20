@@ -1,5 +1,4 @@
 ﻿namespace Cosmic.Entities {
-    using Microsoft.Xna.Framework;
     using System;
 
     public class DamageText : Entity {
@@ -14,7 +13,7 @@
             velocity.Y = -(Game1.random.Next(40, 61) / 10f);
         }
 
-        public override void Update(GameTime gameTime) {
+        public override void Update() {
             if (velocity.Y == 0f) {
                 if (alpha > 0f) {
                     alpha -= Math.Min(alphaChange, alpha);
@@ -27,10 +26,10 @@
 
             velocity.Y += Math.Min(moveSpeedChange, Math.Abs(velocity.Y)) * Math.Sign(-velocity.Y);
 
-            base.Update(gameTime);
+            base.Update();
         }
 
-        public override void Draw(GameTime gameTime) {
+        public override void Draw() {
         }
     }
 }

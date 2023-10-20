@@ -9,10 +9,10 @@
 
             useTime = 6;
 
-            projectileOffset = 32f;
-            projectileSpeed = 24f;
+            projectileOffset = 16f;
+            projectileSpeed = 20f;
             projectileDamage = 2;
-            projectileStrength = 2f;
+            projectileStrength = 1f;
 
             base.Load();
         }

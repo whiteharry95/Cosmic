@@ -9,7 +9,7 @@
         public static MouseState mouseState;
         public static MouseState? mouseStatePrevious;
 
-        public static void Update(GameTime gameTime) {
+        public static void Update() {
             keyboardStatePrevious = keyboardState;
             keyboardState = Keyboard.GetState();
 
@@ -75,6 +75,10 @@
 
         public static Vector2 GetMousePosition() {
             return mouseState.Position.ToVector2() + Camera.position;
+        }
+
+        public static Vector2 GetMouseWorldPosition() {
+            return (mouseState.Position.ToVector2() / 2f) + Camera.position;
         }
     }
 }

@@ -5,7 +5,7 @@
         public override void Load() {
             name = "Dirt Block";
 
-            sprite = new Sprite(TileManager.dirt.texture, Sprite.OriginPreset.MiddleCentre);
+            sprite = new Sprite(TileManager.dirt.textureSheet.textures[0], Sprite.OriginPreset.MiddleCentre);
 
             tile = TileManager.dirt;
 

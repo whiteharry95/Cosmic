@@ -19,42 +19,51 @@
         public int slotSelectedIndex;
         public int hotBarSlotSelectedIndex;
 
-        public override void EarlyUpdate(GameTime gameTime) {
-            if (!(Game1.server.netPlayers[0]?.player?.GetExists() ?? false)) {
+        public override void EarlyUpdate() {
+            if (!(EntityManager.player?.GetExists() ?? false)) {
                 return;
             }
 
             if (InputManager.GetKeyPressed(Keys.Tab)) {
                 open = !open;
+
+                if (!open) {
+                    if (UIManager.cursor.inventorySlot != null) {
+                        EntityManager.player.TossItemDrop(UIManager.cursor.inventorySlot.item, UIManager.cursor.inventorySlot.quantity);
+                        UIManager.cursor.inventorySlot = null;
+                    }
+                }
             }
 
             if (open) {
                 slotSelectedIndex = -1;
 
-                for (int i = 0; i < Game1.server.netPlayers[0].player.inventory.slots.Length; i++) {
-                    /*if (new Box(GetSlotPosition(i) - slotSprite.origin, slotSprite.Size).GetContains(InputManager.mouseState.Position.ToVector2())) {
+                for (int i = 0; i < EntityManager.player.inventory.slots.Length; i++) {
+                    Polygon slotPolygon = new Polygon(() => Polygon.GetRectangleVertices(slotSprite.Size), () => GetSlotPosition(i), getScale: () => new Vector2(Camera.Scale), getOrigin: () => slotSprite.origin);
+
+                    if (slotPolygon.GetCollisionWithPolygon(UIManager.cursor.polygon)) {
                         slotSelectedIndex = i;
-                    }*/
+                    }
                 }
 
                 if (slotSelectedIndex != -1) {
                     if (InputManager.GetMouseLeftPressed()) {
-                        if (UIManager.cursor.inventorySlot != null && Game1.server.netPlayers[0].player.inventory.slots[slotSelectedIndex] == null) {
-                            Game1.server.netPlayers[0].player.inventory.slots[slotSelectedIndex] = UIManager.cursor.inventorySlot;
+                        if (UIManager.cursor.inventorySlot != null && EntityManager.player.inventory.slots[slotSelectedIndex] == null) {
+                            EntityManager.player.inventory.slots[slotSelectedIndex] = UIManager.cursor.inventorySlot;
                             UIManager.cursor.inventorySlot = null;
                         } else {
-                            if (UIManager.cursor.inventorySlot == null && Game1.server.netPlayers[0].player.inventory.slots[slotSelectedIndex] != null) {
-                                UIManager.cursor.inventorySlot = Game1.server.netPlayers[0].player.inventory.slots[slotSelectedIndex];
-                                Game1.server.netPlayers[0].player.inventory.slots[slotSelectedIndex] = null;
+                            if (UIManager.cursor.inventorySlot == null && EntityManager.player.inventory.slots[slotSelectedIndex] != null) {
+                                UIManager.cursor.inventorySlot = EntityManager.player.inventory.slots[slotSelectedIndex];
+                                EntityManager.player.inventory.slots[slotSelectedIndex] = null;
                             } else {
-                                if (UIManager.cursor.inventorySlot != null && Game1.server.netPlayers[0].player.inventory.slots[slotSelectedIndex] != null) {
-                                    if (UIManager.cursor.inventorySlot.item != Game1.server.netPlayers[0].player.inventory.slots[slotSelectedIndex].item || UIManager.cursor.inventorySlot.quantity == UIManager.cursor.inventorySlot.item.stack || Game1.server.netPlayers[0].player.inventory.slots[slotSelectedIndex].quantity == Game1.server.netPlayers[0].player.inventory.slots[slotSelectedIndex].item.stack) {
-                                        InventorySlot slotSelected = Game1.server.netPlayers[0].player.inventory.slots[slotSelectedIndex];
+                                if (UIManager.cursor.inventorySlot != null && EntityManager.player.inventory.slots[slotSelectedIndex] != null) {
+                                    if (UIManager.cursor.inventorySlot.item != EntityManager.player.inventory.slots[slotSelectedIndex].item || UIManager.cursor.inventorySlot.quantity == UIManager.cursor.inventorySlot.item.stack || EntityManager.player.inventory.slots[slotSelectedIndex].quantity == EntityManager.player.inventory.slots[slotSelectedIndex].item.stack) {
+                                        InventorySlot slotSelected = EntityManager.player.inventory.slots[slotSelectedIndex];
 
-                                        Game1.server.netPlayers[0].player.inventory.slots[slotSelectedIndex] = UIManager.cursor.inventorySlot;
+                                        EntityManager.player.inventory.slots[slotSelectedIndex] = UIManager.cursor.inventorySlot;
                                         UIManager.cursor.inventorySlot = slotSelected;
                                     } else {
-                                        int quantity = Game1.server.netPlayers[0].player.inventory.AddItem(UIManager.cursor.inventorySlot.item, UIManager.cursor.inventorySlot.quantity, slotSelectedIndex, true);
+                                        int quantity = EntityManager.player.inventory.AddItem(UIManager.cursor.inventorySlot.item, UIManager.cursor.inventorySlot.quantity, slotSelectedIndex, true);
 
                                         if (quantity > 0) {
                                             UIManager.cursor.inventorySlot.quantity = quantity;
@@ -68,24 +77,26 @@
                     }
                 }
             } else {
-                hotBarSlotSelectedIndex += Convert.ToInt32(InputManager.GetMouseScrollDown()) - Convert.ToInt32(InputManager.GetMouseScrollUp());
-                hotBarSlotSelectedIndex %= RowSize;
+                if (!InputManager.GetKeyHeld(Keys.LeftAlt) || !(EntityManager.player.inventory.slots[hotBarSlotSelectedIndex].item?.showTileSelection ?? false)) {
+                    hotBarSlotSelectedIndex += Convert.ToInt32(InputManager.GetMouseScrollUp()) - Convert.ToInt32(InputManager.GetMouseScrollDown());
+                    hotBarSlotSelectedIndex %= RowSize;
 
-                if (hotBarSlotSelectedIndex < 0) {
-                    hotBarSlotSelectedIndex += RowSize;
+                    if (hotBarSlotSelectedIndex < 0) {
+                        hotBarSlotSelectedIndex += RowSize;
+                    }
                 }
             }
         }
 
-        public override void Update(GameTime gameTime) {
+        public override void Update() {
         }
 
-        public override void Draw(GameTime gameTime) {
-            if (!(Game1.server.netPlayers[0]?.player?.GetExists() ?? false)) {
+        public override void Draw() {
+            if (!(EntityManager.player?.GetExists() ?? false)) {
                 return;
             }
 
-            for (int i = 0; i < Game1.server.netPlayers[0].player.inventory.slots.Length; i++) {
+            for (int i = 0; i < EntityManager.player.inventory.slots.Length; i++) {
                 if (i >= RowSize && !open) {
                     break;
                 }
@@ -93,20 +104,20 @@
                 Vector2 slotPosition = GetSlotPosition(i);
                 Color slotColour = (open ? slotSelectedIndex == i : hotBarSlotSelectedIndex == i) ? Color.Yellow : Color.White;
 
-                Game1.spriteBatch.Draw(TextureManager.Pixel, slotPosition - slotSprite.origin, null, Color.Black * slotBackgroundBrightness, 0f, Vector2.Zero, slotSprite.Size, SpriteEffects.None, 0f);
+                Game1.spriteBatch.Draw(TextureManager.Pixel, slotPosition - (slotSprite.origin * Camera.Scale), null, Color.Black * slotBackgroundBrightness, 0f, Vector2.Zero, slotSprite.Size * Camera.Scale, SpriteEffects.None, 0f);
 
-                slotSprite.Draw(slotPosition, colour: slotColour);
+                slotSprite.Draw(slotPosition, scale: new Vector2(Camera.Scale), colour: slotColour);
 
-                Game1.server.netPlayers[0].player.inventory.slots[i]?.item.sprite.Draw(slotPosition, Game1.server.netPlayers[0].player.inventory.slots[i].item.displayRotation, origin: Game1.server.netPlayers[0].player.inventory.slots[i].item.sprite.Size / 2f);
+                EntityManager.player.inventory.slots[i]?.item.sprite.Draw(slotPosition, EntityManager.player.inventory.slots[i].item.displayRotation, new Vector2(Camera.Scale), origin: EntityManager.player.inventory.slots[i].item.sprite.mask.Location.ToVector2() + (EntityManager.player.inventory.slots[i].item.sprite.mask.Size.ToVector2() / 2f));
             }
 
             if (!open) {
-                if (Game1.server.netPlayers[0].player.inventory.slots[hotBarSlotSelectedIndex] != null) {
+                if (EntityManager.player.inventory.slots[hotBarSlotSelectedIndex] != null) {
                     Vector2 itemTextPosition = GetHotBarPosition() - new Vector2(0f, 72f);
-                    string itemText = Game1.server.netPlayers[0].player.inventory.slots[hotBarSlotSelectedIndex].item.name;
+                    string itemText = EntityManager.player.inventory.slots[hotBarSlotSelectedIndex].item.name;
 
-                    if (Game1.server.netPlayers[0].player.inventory.slots[hotBarSlotSelectedIndex].quantity > 1) {
-                        itemText += $" ({Game1.server.netPlayers[0].player.inventory.slots[hotBarSlotSelectedIndex].quantity})";
+                    if (EntityManager.player.inventory.slots[hotBarSlotSelectedIndex].quantity > 1) {
+                        itemText += $" ({EntityManager.player.inventory.slots[hotBarSlotSelectedIndex].quantity})";
                     }
 
                     DrawUtilities.DrawText(FontManager.ArialMedium, itemText, itemTextPosition, Color.White, DrawUtilities.HorizontalAlignment.Centre, DrawUtilities.VerticalAlignment.Middle);
@@ -122,7 +133,7 @@
             Vector2 slotPosition = GetHotBarPosition() + new Vector2(slotsGap * (x - ((RowSize - 1f) / 2f)), 0f);
 
             if (y > 0) {
-                slotPosition = (new Vector2(Game1.graphicsDeviceManager.PreferredBackBufferWidth, Game1.graphicsDeviceManager.PreferredBackBufferHeight) / 2f) + (new Vector2(slotsGap) * new Vector2(x - ((RowSize - 1f) / 2f), y - ((Game1.server.netPlayers[0].player.inventory.slots.Length / RowSize) / 2f)));
+                slotPosition = (new Vector2(Game1.graphicsDeviceManager.PreferredBackBufferWidth, Game1.graphicsDeviceManager.PreferredBackBufferHeight) / 2f) + (new Vector2(slotsGap) * new Vector2(x - ((RowSize - 1f) / 2f), y - ((EntityManager.player.inventory.slots.Length / RowSize) / 2f)));
             }
 
             return slotPosition;

@@ -1,5 +1,4 @@
 ﻿namespace Cosmic.Entities.Projectiles {
-    using Cosmic;
     using Cosmic.Projectiles;
 
     public abstract class ProjectileEntity<T> : Entity where T : Projectile {

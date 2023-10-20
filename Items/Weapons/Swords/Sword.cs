@@ -2,6 +2,7 @@
     using Microsoft.Xna.Framework;
     using Cosmic.Entities;
     using Cosmic.Utilities;
+    using System;
 
     public class Sword : Weapon {
         public int hitboxDamage;
@@ -9,18 +10,18 @@
         public float hitboxOffset;
 
         public override void Load() {
-            displayRotation = -MathHelper.Pi / 4f;
+            displayRotation = -MathF.PI / 4f;
         }
 
         public override void OnPrimaryUse() {
-            Vector2 hitboxDirection = MathUtilities.NormaliseVector2(InputManager.GetMousePosition() - Game1.server.netPlayers[0].player.position);
+            Vector2 hitboxDirection = MathUtilities.GetNormalisedVector2(InputManager.GetMouseWorldPosition() - EntityManager.player.position);
 
             if (hitboxDirection != Vector2.Zero) {
-                Hitbox hitbox = EntityManager.AddEntity<Hitbox>(Game1.server.netPlayers[0].player.position + hitboxDirection * hitboxOffset, Game1.server.netPlayers[0].player.world);
+                Hitbox hitbox = EntityManager.AddEntity<Hitbox>(EntityManager.player.position + hitboxDirection * hitboxOffset, EntityManager.player.world);
                 hitbox.damage = hitboxDamage;
                 hitbox.force = hitboxDirection * hitboxStrength;
 
-                Game1.server.netPlayers[0].player.itemRotationOffsetAxis *= -1f;
+                EntityManager.player.itemRotationOffsetAxis *= -1f;
             }
         }
     }

@@ -4,7 +4,7 @@
 
     public class Stone : Tile {
         public override void Load() {
-            texture = TextureManager.Tiles_Stone;
+            textureSheet = TextureManager.Tiles_Stone;
 
             life = 30;
 

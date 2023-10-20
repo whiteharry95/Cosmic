@@ -1,6 +1,7 @@
 ﻿namespace Cosmic {
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Graphics;
+    using System;
 
     public class Sprite {
         public enum OriginPreset {
@@ -31,28 +32,39 @@
 
         public Sprite(Texture2D texture, OriginPreset originPreset) {
             this.texture = texture;
-            origin = GetOriginFromPreset(originPreset);
 
             mask = GetMask();
+
+            origin = GetOriginFromPreset(originPreset);
         }
 
         public void Draw(Vector2 position, float rotation = 0f, Vector2? scale = null, Color? colour = null, SpriteEffects flip = SpriteEffects.None, Vector2? origin = null) {
-            Game1.spriteBatch.Draw(texture, position, null, colour ?? Color.White, rotation, origin ?? this.origin, scale ?? Vector2.One, flip, 0f);
+            Vector2 drawOrigin = origin ?? this.origin;
+
+            if (flip.HasFlag(SpriteEffects.FlipHorizontally)) {
+                drawOrigin.X = texture.Width - drawOrigin.X;
+            }
+
+            if (flip.HasFlag(SpriteEffects.FlipVertically)) {
+                drawOrigin.Y = texture.Height - drawOrigin.Y;
+            }
+
+            Game1.spriteBatch.Draw(texture, position, null, colour ?? Color.White, rotation, drawOrigin, scale ?? Vector2.One, flip, 0f);
         }
 
         public Vector2 GetOriginFromPreset(OriginPreset originPreset) {
             Vector2 origin;
 
             switch (originPreset) {
-                case OriginPreset.TopCentre: origin = new Vector2(texture.Width / 2f, 0f); break;
-                case OriginPreset.TopRight: origin = new Vector2(texture.Width, 0f); break;
-                case OriginPreset.MiddleLeft: origin = new Vector2(0f, texture.Height / 2f); break;
-                case OriginPreset.MiddleCentre: origin = new Vector2(texture.Width / 2f, texture.Height / 2f); break;
-                case OriginPreset.MiddleRight: origin = new Vector2(texture.Width, texture.Height / 2f); break;
-                case OriginPreset.BottomLeft: origin = new Vector2(0f, texture.Height); break;
-                case OriginPreset.BottomCentre: origin = new Vector2(texture.Width / 2f, texture.Height); break;
-                case OriginPreset.BottomRight: origin = new Vector2(texture.Width, texture.Height); break;
-                default: origin = Vector2.Zero; break;
+                case OriginPreset.TopCentre: origin = mask.Location.ToVector2() + new Vector2(mask.Width / 2f, 0f); break;
+                case OriginPreset.TopRight: origin = mask.Location.ToVector2() + new Vector2(mask.Width, 0f); break;
+                case OriginPreset.MiddleLeft: origin = mask.Location.ToVector2() + new Vector2(0f, mask.Height / 2f); break;
+                case OriginPreset.MiddleCentre: origin = mask.Location.ToVector2() + (mask.Size.ToVector2() / 2f); break;
+                case OriginPreset.MiddleRight: origin = mask.Location.ToVector2() + new Vector2(mask.Width, mask.Height / 2f); break;
+                case OriginPreset.BottomLeft: origin = mask.Location.ToVector2() + new Vector2(0f, mask.Height); break;
+                case OriginPreset.BottomCentre: origin = mask.Location.ToVector2() + new Vector2(mask.Width / 2f, mask.Height); break;
+                case OriginPreset.BottomRight: origin = mask.Location.ToVector2() + mask.Size.ToVector2(); break;
+                default: origin = mask.Location.ToVector2(); break;
             }
 
             return origin;
@@ -73,11 +85,11 @@
                 int y = i / texture.Width;
 
                 if (textureData[i].A > 0) {
-                    x1 = MathHelper.Min(x, x1);
-                    y1 = MathHelper.Min(y, y1);
+                    x1 = Math.Min(x, x1);
+                    y1 = Math.Min(y, y1);
 
-                    x2 = MathHelper.Max(x, x2);
-                    y2 = MathHelper.Max(y, y2);
+                    x2 = Math.Max(x, x2);
+                    y2 = Math.Max(y, y2);
                 }
             }
 

@@ -63,18 +63,6 @@
 /processorParam:TextureFormat=Color
 /build:Textures/Entities/Hitbox.png
 
-#begin Textures/Entities/ItemDrop.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Textures/Entities/ItemDrop.png
-
 #begin Textures/Items/Drills/CopperDrill.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -110,6 +98,30 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Textures/Items/Swords/WoodenSword.png
+
+#begin Textures/Items/WorldBuilder.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Textures/Items/WorldBuilder.png
+
+#begin Textures/Items/WorldTeleporter.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Textures/Items/WorldTeleporter.png
 
 #begin Textures/Pixel.png
 /importer:TextureImporter
@@ -159,7 +171,7 @@
 /processorParam:TextureFormat=Color
 /build:Textures/Tiles/Stone.png
 
-#begin Textures/Tiles/TileLife0.png
+#begin Textures/Tiles/TileLife.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -169,43 +181,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Textures/Tiles/TileLife0.png
-
-#begin Textures/Tiles/TileLife1.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Textures/Tiles/TileLife1.png
-
-#begin Textures/Tiles/TileLife2.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Textures/Tiles/TileLife2.png
-
-#begin Textures/Tiles/TileLife3.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Textures/Tiles/TileLife3.png
+/build:Textures/Tiles/TileLife.png
 
 #begin Textures/UI/Cursor.png
 /importer:TextureImporter
@@ -231,7 +207,7 @@
 /processorParam:TextureFormat=Color
 /build:Textures/UI/InventorySlot.png
 
-#begin Textures/UI/TileSelection.png
+#begin Textures/WorldObjects/Chandelier.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -241,7 +217,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Textures/UI/TileSelection.png
+/build:Textures/WorldObjects/Chandelier.png
 
 #begin Textures/WorldObjects/Rock.png
 /importer:TextureImporter

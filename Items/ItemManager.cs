@@ -16,16 +16,22 @@
         public static CopperDrill copperDrill;
         public static WoodenSword sword;
         public static Rock rock;
+        public static Chandelier chandelier;
+        public static WorldTeleporter worldTeleporter;
+        public static WorldBuilder worldBuilder;
 
         public static void Init() {
             items = new List<Item>();
 
-            dirtBlock = AddItem<DirtBlock>(false);
-            stoneBlock = AddItem<StoneBlock>(false);
-            gun = AddItem<MachineGun>(false);
-            copperDrill = AddItem<CopperDrill>(false);
-            sword = AddItem<WoodenSword>(false);
-            rock = AddItem<Rock>(false);
+            dirtBlock = AddItem<DirtBlock>();
+            stoneBlock = AddItem<StoneBlock>();
+            gun = AddItem<MachineGun>();
+            copperDrill = AddItem<CopperDrill>();
+            sword = AddItem<WoodenSword>();
+            rock = AddItem<Rock>();
+            chandelier = AddItem<Chandelier>();
+            worldTeleporter = AddItem<WorldTeleporter>();
+            worldBuilder = AddItem<WorldBuilder>();
         }
 
         public static void Load() {
@@ -34,7 +40,7 @@
             }
         }
 
-        public static T AddItem<T>(bool load = true) where T : Item {
+        public static T AddItem<T>(bool load = false) where T : Item {
             T item = Activator.CreateInstance<T>();
             item.id = (ushort)items.Count;
 

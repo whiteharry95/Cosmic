@@ -5,7 +5,7 @@
         public int health;
         public int healthMax;
 
-        public virtual bool Hurt(int damage, Vector2? force = null, Vector2? position = null) {
+        public virtual bool Hurt(int damage, Vector2? force = null) {
             if (damage <= 0) {
                 return false;
             }
@@ -21,7 +21,7 @@
                 velocity = (Vector2)force;
             }
 
-            DamageText damageText = EntityManager.AddEntity<DamageText>(position ?? this.position, world);
+            DamageText damageText = EntityManager.AddEntity<DamageText>(position, world);
             damageText.damage = damage;
 
             return true;

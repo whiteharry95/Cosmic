@@ -1,6 +1,6 @@
 ﻿namespace Cosmic.Items.Weapons.Swords {
     using Cosmic.Assets;
-    using Microsoft.Xna.Framework;
+    using System;
 
     public class WoodenSword : Sword {
         public override void Load() {
@@ -10,11 +10,11 @@
 
             useTime = 15;
 
-            holdRotationOffset = MathHelper.Pi * (7f / 12f);
+            holdRotationOffset = MathF.PI * (7f / 12f);
 
             hitboxDamage = 7;
-            hitboxStrength = 5f;
-            hitboxOffset = 48f;
+            hitboxStrength = 2.5f;
+            hitboxOffset = 24f;
 
             base.Load();
         }

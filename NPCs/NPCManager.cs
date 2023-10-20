@@ -11,7 +11,7 @@
         public static void Init() {
             nPCs = new List<NPC>();
 
-            greenShooter = AddEnemy<GreenShooter>(false);
+            greenShooter = AddEnemy<GreenShooter>();
         }
 
         public static void Load() {
@@ -20,7 +20,7 @@
             }
         }
 
-        public static T AddEnemy<T>(bool load = true) where T : NPC {
+        public static T AddEnemy<T>(bool load = false) where T : NPC {
             T enemy = Activator.CreateInstance<T>();
             enemy.id = (ushort)nPCs.Count;
 

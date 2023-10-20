@@ -1,22 +1,31 @@
 ﻿namespace Cosmic.Items.Tools.Drills {
     using Microsoft.Xna.Framework;
-    using Cosmic.Universes;
     using Cosmic.TileMap;
+    using Cosmic.Entities;
+    using System;
 
     public class Drill : Tool {
         public override void Load() {
             showTileSelection = true;
-            displayRotation = -MathHelper.Pi / 4f;
+            displayRotation = -MathF.PI / 4f;
         }
 
-        /*public override void OnUse() {
-            foreach (Point tilePosition in Game1.server.netPlayers[0].player.tileSelection) {
-                TileMapTile mouseTile = (Game1.server.netPlayers[0].player.tileSelectionWalls ? UniverseManager.universeCurrent.worldCurrent.tileMapWalls : UniverseManager.universeCurrent.worldCurrent.tileMap).GetTile(tilePosition);
+        public override void OnPrimaryUse() {
+            Mine(false);
+        }
+
+        public override void OnSecondaryUse() {
+            Mine(true);
+        }
+
+        public void Mine(bool wall) {
+            foreach (Point tilePosition in EntityManager.player.tileSelection) {
+                TileMapTile mouseTile = (wall ? EntityManager.player.world.tileMapWalls : EntityManager.player.world.tileMap).GetTile(tilePosition.X, tilePosition.Y);
 
                 if (mouseTile != null) {
-                    mouseTile.Hurt(1);
+                    mouseTile.Mine(1);
                 }
             }
-        }*/
+        }
     }
 }

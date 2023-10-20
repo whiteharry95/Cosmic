@@ -1,10 +1,11 @@
 ﻿namespace Cosmic.UI {
-    using Microsoft.Xna.Framework;
-    using Microsoft.Xna.Framework.Content;
     using Cosmic.UI.UIElements;
     using System.Collections.Generic;
 
     public static class UIManager {
+        public static int Width => Game1.graphicsDeviceManager.PreferredBackBufferWidth;
+        public static int Height => Game1.graphicsDeviceManager.PreferredBackBufferHeight;
+
         public static List<UIElement> uIElements;
 
         public static TileSelection tileSelections;
@@ -14,7 +15,7 @@
         public static PlayerBars playerBars;
         public static Cursor cursor;
 
-        public static void Load(ContentManager contentManager) {
+        public static void Load() {
             uIElements = new List<UIElement> {
                 (tileSelections = new TileSelection()),
                 (characterHealthBars = new CharacterHealthBars()),
@@ -25,21 +26,21 @@
             };
         }
 
-        public static void EarlyUpdate(GameTime gameTime) {
+        public static void EarlyUpdate() {
             foreach (UIElement uIElement in uIElements) {
-                uIElement.EarlyUpdate(gameTime);
+                uIElement.EarlyUpdate();
             }
         }
 
-        public static void Update(GameTime gameTime) {
+        public static void Update() {
             foreach (UIElement uIElement in uIElements) {
-                uIElement.Update(gameTime);
+                uIElement.Update();
             }
         }
 
-        public static void Draw(GameTime gameTime) {
+        public static void Draw() {
             foreach (UIElement uIElement in uIElements) {
-                uIElement.Draw(gameTime);
+                uIElement.Draw();
             }
         }
     }

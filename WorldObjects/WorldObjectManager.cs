@@ -6,11 +6,13 @@
         private static List<WorldObject> worldObjects;
 
         public static Rock rock;
+        public static Chandelier chandelier;
 
         public static void Init() {
             worldObjects = new List<WorldObject>();
 
             rock = AddWorldObject<Rock>();
+            chandelier = AddWorldObject<Chandelier>();
         }
 
         public static void Load() {

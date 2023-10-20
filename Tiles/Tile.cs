@@ -1,15 +1,15 @@
 ﻿namespace Cosmic.Tiles {
-    using Microsoft.Xna.Framework.Graphics;
     using Cosmic.Items;
+    using Cosmic.Assets;
 
     public class Tile {
-        public const int Size = 16;
+        public const int Size = 8;
 
-        public ushort id;
+        public int id;
 
-        public Texture2D texture;
+        public TextureSheet textureSheet;
 
-        public ushort life;
+        public int life;
 
         public Item item;
 

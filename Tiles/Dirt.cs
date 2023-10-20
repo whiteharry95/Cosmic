@@ -4,7 +4,7 @@
 
     public class Dirt : Tile {
         public override void Load() {
-            texture = TextureManager.Tiles_Dirt;
+            textureSheet = TextureManager.Tiles_Dirt;
 
             life = 15;
 

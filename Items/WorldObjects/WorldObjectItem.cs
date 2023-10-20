@@ -15,26 +15,39 @@
         }
 
         public override void OnPrimaryUse() {
-            int tileWidth = (int)Math.Ceiling((float)worldObject.sprite.texture.Width / Tile.Size);
-            int tileHeight = (int)Math.Ceiling((float)worldObject.sprite.texture.Height / Tile.Size);
+            if (EntityManager.player.tileSelection.Count > 0) {
+                int tileWidth = (int)Math.Ceiling((float)worldObject.sprite.texture.Width / Tile.Size);
+                int tileHeight = (int)Math.Ceiling((float)worldObject.sprite.texture.Height / Tile.Size);
 
-            Vector2 mouseTilePosition = TileMap.GetWorldToTilePosition(InputManager.GetMousePosition() + new Vector2(tileWidth % 2f == 0f ? (Tile.Size / 2f) : 0f, tileHeight % 2f == 0f ? (Tile.Size / 2f) : 0f)).ToVector2() * Tile.Size;
+                Vector2 mouseTilePosition = TileMap.GetWorldToTilePosition(InputManager.GetMouseWorldPosition() + new Vector2(tileWidth % 2f == 0f ? (Tile.Size / 2f) : 0f, tileHeight % 2f == 0f ? (Tile.Size / 2f) : 0f)).ToVector2() * Tile.Size;
 
-            /*if (EntityManager.GetEntitiesIntersectingPolygon<WorldObjectEntity>(new Box(mouseTilePosition - worldObject.sprite.origin, new Vector2(tileWidth, tileHeight) * Tile.Size)).Count == 0) {
-                EntityManager.AddEntity<WorldObjectEntity>(mouseTilePosition, Game1.server.netPlayers[0].player.world, worldObjectEntity => worldObjectEntity.worldObject = worldObject);
-                Game1.server.netPlayers[0].player.inventory.RemoveItem(this);
-            }*/
+                Polygon worldObjectPolygon = new Polygon(() => Polygon.GetRectangleVertices(new Vector2(tileWidth, tileHeight) * Tile.Size), () => mouseTilePosition - (new Vector2(MathF.Floor(tileWidth / 2f), MathF.Floor(tileHeight / 2f)) * Tile.Size));
 
-            /*foreach (Point tilePosition in Game1.server.netPlayers[0].player.tileSelection) {
-                TileMap tileMap = Game1.server.netPlayers[0].player.tileSelectionWalls ? UniverseManager.universeCurrent.worldCurrent.tileMapWalls : UniverseManager.universeCurrent.worldCurrent.tileMap;
+                if (EntityManager.GetEntitiesIntersectingPolygon<WorldObjectEntity>(worldObjectPolygon).Count == 0) {
+                    if (EntityManager.player.world.tileMap.GetTilesIntersectingPolygon(worldObjectPolygon).Count == 0) {
+                        bool place = false;
 
-                if (tileMap.tiles[tilePosition.X, tilePosition.Y] == null) {
-                    if (!tileMap.GetTilePositionCollisionWithEntity<Character>(tilePosition) || Game1.server.netPlayers[0].player.tileSelectionWalls) {
-                        tileMap.tiles[tilePosition.X, tilePosition.Y] = new TileMapTile(tile, tileMap, tilePosition.X, tilePosition.Y);
-                        Game1.server.netPlayers[0].player.inventory.RemoveItem(this);
+                        Polygon worldObjectPlaceTypePolygon;
+
+                        switch (worldObject.placeType) {
+                            case WorldObject.PlaceType.Floor:
+                                worldObjectPlaceTypePolygon = new Polygon(() => Polygon.GetRectangleVertices(new Vector2(tileWidth, 1f) * Tile.Size), () => mouseTilePosition - (new Vector2(MathF.Floor(tileWidth / 2f), MathF.Floor(tileHeight / 2f)) * Tile.Size) + new Vector2(0f, tileHeight * Tile.Size));
+                                place = EntityManager.player.world.tileMap.GetTilesIntersectingPolygon(worldObjectPlaceTypePolygon).Count == tileWidth;
+                                break;
+
+                            case WorldObject.PlaceType.Ceiling:
+                                worldObjectPlaceTypePolygon = new Polygon(() => Polygon.GetRectangleVertices(new Vector2(tileWidth, 1f) * Tile.Size), () => mouseTilePosition - (new Vector2(MathF.Floor(tileWidth / 2f), MathF.Floor(tileHeight / 2f)) * Tile.Size) - new Vector2(0f, Tile.Size));
+                                place = EntityManager.player.world.tileMap.GetTilesIntersectingPolygon(worldObjectPlaceTypePolygon).Count == tileWidth;
+                                break;
+                        }
+
+                        if (place) {
+                            EntityManager.AddEntity<WorldObjectEntity>(mouseTilePosition - (new Vector2(MathF.Floor(tileWidth / 2f), MathF.Floor(tileHeight / 2f)) * Tile.Size), EntityManager.player.world, worldObjectEntity => worldObjectEntity.worldObject = worldObject);
+                            EntityManager.player.inventory.RemoveItem(this);
+                        }
                     }
                 }
-            }*/
+            }
         }
     }
 }
