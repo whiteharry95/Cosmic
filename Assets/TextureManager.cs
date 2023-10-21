@@ -29,8 +29,6 @@
         public static Texture2D Items_Guns_MachineGun { get; private set; }
         public static Texture2D Items_Drills_CopperDrill { get; private set; }
         public static Texture2D Items_Swords_WoodenSword { get; private set; }
-        public static Texture2D Items_WorldTeleporter { get; private set; }
-        public static Texture2D Items_WorldBuilder { get; private set; }
 
         public static void Load(ContentManager contentManager) {
             Pixel = contentManager.Load<Texture2D>("Textures/Pixel");
@@ -55,8 +53,6 @@
             Items_Guns_MachineGun = contentManager.Load<Texture2D>("Textures/Items/Guns/MachineGun");
             Items_Drills_CopperDrill = contentManager.Load<Texture2D>("Textures/Items/Drills/CopperDrill");
             Items_Swords_WoodenSword = contentManager.Load<Texture2D>("Textures/Items/Swords/WoodenSword");
-            Items_WorldTeleporter = contentManager.Load<Texture2D>("Textures/Items/WorldTeleporter");
-            Items_WorldBuilder = contentManager.Load<Texture2D>("Textures/Items/WorldBuilder");
         }
 
         public static void Unload() {

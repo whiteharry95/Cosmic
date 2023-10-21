@@ -46,9 +46,5 @@
 
             return world;
         }
-
-        public static void ChangeWorld(World world) {
-            WorldCurrent = world;
-        }
     }
 }

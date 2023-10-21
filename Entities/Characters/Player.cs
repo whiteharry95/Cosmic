@@ -63,15 +63,12 @@
             collider = new EntityCollider(this);
 
             Inventory = new Inventory(PlayerInventory.RowSize * 5);
-            Inventory.AddItem(ItemManager.StoneBlock, 950);
-            Inventory.AddItem(ItemManager.StoneBlock, 51, 10);
+            Inventory.AddItem(ItemManager.StoneBlock, 900);
+            Inventory.AddItem(ItemManager.WoodenSword);
+            Inventory.AddItem(ItemManager.Gun);
+            Inventory.AddItem(ItemManager.CopperDrill);
             Inventory.AddItem(ItemManager.Rock, 100);
             Inventory.AddItem(ItemManager.Chandelier, 100);
-            Inventory.AddItem(ItemManager.WoodenSword, 1);
-            Inventory.AddItem(ItemManager.Gun, 1);
-            Inventory.AddItem(ItemManager.CopperDrill, 1);
-            Inventory.AddItem(ItemManager.WorldTeleporter, 1);
-            Inventory.AddItem(ItemManager.WorldBuilder, 1);
 
             tileSelectionSize = tileSelectionSizeMax;
         }

@@ -15,8 +15,6 @@
         public static WoodenSword WoodenSword { get; private set; }
         public static Rock Rock { get; private set; }
         public static Chandelier Chandelier { get; private set; }
-        public static WorldTeleporter WorldTeleporter { get; private set; }
-        public static WorldBuilder WorldBuilder { get; private set; }
 
         private static List<Item> items;
 
@@ -30,8 +28,6 @@
             WoodenSword = AddItem<WoodenSword>();
             Rock = AddItem<Rock>();
             Chandelier = AddItem<Chandelier>();
-            WorldTeleporter = AddItem<WorldTeleporter>();
-            WorldBuilder = AddItem<WorldBuilder>();
         }
 
         public static void Load() {
