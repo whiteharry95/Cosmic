@@ -8,30 +8,30 @@
     using System.Collections.Generic;
 
     public static class ItemManager {
-        private static List<Item> items;
+        public static DirtBlock DirtBlock { get; private set; }
+        public static StoneBlock StoneBlock { get; private set; }
+        public static MachineGun Gun { get; private set; }
+        public static CopperDrill CopperDrill { get; private set; }
+        public static WoodenSword WoodenSword { get; private set; }
+        public static Rock Rock { get; private set; }
+        public static Chandelier Chandelier { get; private set; }
+        public static WorldTeleporter WorldTeleporter { get; private set; }
+        public static WorldBuilder WorldBuilder { get; private set; }
 
-        public static DirtBlock dirtBlock;
-        public static StoneBlock stoneBlock;
-        public static MachineGun gun;
-        public static CopperDrill copperDrill;
-        public static WoodenSword sword;
-        public static Rock rock;
-        public static Chandelier chandelier;
-        public static WorldTeleporter worldTeleporter;
-        public static WorldBuilder worldBuilder;
+        private static List<Item> items;
 
         public static void Init() {
             items = new List<Item>();
 
-            dirtBlock = AddItem<DirtBlock>();
-            stoneBlock = AddItem<StoneBlock>();
-            gun = AddItem<MachineGun>();
-            copperDrill = AddItem<CopperDrill>();
-            sword = AddItem<WoodenSword>();
-            rock = AddItem<Rock>();
-            chandelier = AddItem<Chandelier>();
-            worldTeleporter = AddItem<WorldTeleporter>();
-            worldBuilder = AddItem<WorldBuilder>();
+            DirtBlock = AddItem<DirtBlock>();
+            StoneBlock = AddItem<StoneBlock>();
+            Gun = AddItem<MachineGun>();
+            CopperDrill = AddItem<CopperDrill>();
+            WoodenSword = AddItem<WoodenSword>();
+            Rock = AddItem<Rock>();
+            Chandelier = AddItem<Chandelier>();
+            WorldTeleporter = AddItem<WorldTeleporter>();
+            WorldBuilder = AddItem<WorldBuilder>();
         }
 
         public static void Load() {

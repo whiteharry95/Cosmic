@@ -5,9 +5,9 @@
         public override void Load() {
             name = "Rock";
 
-            sprite = new Sprite(WorldObjectManager.rock.sprite.texture, Sprite.OriginPreset.MiddleCentre);
+            sprite = new Sprite(WorldObjectManager.Rock.sprite.texture, Sprite.OriginPreset.MiddleCentre);
 
-            worldObject = WorldObjectManager.rock;
+            WorldObject = WorldObjectManager.Rock;
 
             base.Load();
         }

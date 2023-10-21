@@ -16,25 +16,25 @@
         public Polygon polygon;
 
         public Cursor() {
-            polygon = new Polygon(() => Polygon.GetRectangleVertices(sprite.Size), () => InputManager.mouseState.Position.ToVector2(), getScale: () => new Vector2(Camera.Scale), getOrigin: () => sprite.origin);
+            polygon = new Polygon(() => Polygon.GetRectangleVertices(sprite.Size), () => InputManager.MouseState.Position.ToVector2(), getScale: () => new Vector2(Camera.Scale), getOrigin: () => sprite.origin);
         }
 
         public override void Update() {
             text = "";
 
             if (UIManager.playerInventory.open && UIManager.playerInventory.slotSelectedIndex != -1) {
-                if (EntityManager.player.inventory.slots[UIManager.playerInventory.slotSelectedIndex] != null) {
-                    text = $"{EntityManager.player.inventory.slots[UIManager.playerInventory.slotSelectedIndex].item.name}";
+                if (EntityManager.Player.Inventory.slots[UIManager.playerInventory.slotSelectedIndex] != null) {
+                    text = $"{EntityManager.Player.Inventory.slots[UIManager.playerInventory.slotSelectedIndex].item.name}";
 
-                    if (EntityManager.player.inventory.slots[UIManager.playerInventory.slotSelectedIndex].quantity > 1) {
-                        text += $" ({EntityManager.player.inventory.slots[UIManager.playerInventory.slotSelectedIndex].quantity})";
+                    if (EntityManager.Player.Inventory.slots[UIManager.playerInventory.slotSelectedIndex].quantity > 1) {
+                        text += $" ({EntityManager.Player.Inventory.slots[UIManager.playerInventory.slotSelectedIndex].quantity})";
                     }
                 }
             }
         }
 
         public override void Draw() {
-            Vector2 position = InputManager.mouseState.Position.ToVector2();
+            Vector2 position = InputManager.MouseState.Position.ToVector2();
 
             if (inventorySlot != null) {
                 inventorySlot.item.sprite.Draw(position, inventorySlot.item.displayRotation, scale: new Vector2(Camera.Scale), origin: inventorySlot.item.sprite.mask.Location.ToVector2() + (inventorySlot.item.sprite.mask.Size.ToVector2() / 2f));

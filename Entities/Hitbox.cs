@@ -2,8 +2,8 @@
     using Microsoft.Xna.Framework;
     using Cosmic.Entities.Characters;
     using System.Collections.Generic;
-    using Cosmic.TileMap;
     using Cosmic.Assets;
+    using Cosmic.Worlds;
 
     public class Hitbox : Entity {
         public int damage;
@@ -21,8 +21,8 @@
         public override void Update() {
             base.Update();
 
-            if (collider.GetCollisionWithTiles(out List<TileMapTile> tileMapTiles)) {
-                foreach (TileMapTile tileMapTile in tileMapTiles) {
+            if (collider.GetCollisionWithTiles(out List<WorldTileMapTile> tileMapTiles)) {
+                foreach (WorldTileMapTile tileMapTile in tileMapTiles) {
                     tileMapTile.Mine(1);
                 }
             }

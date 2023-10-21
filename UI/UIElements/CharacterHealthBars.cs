@@ -20,10 +20,10 @@
                 float healthBarWidth = 16f;
                 float healthBarHeight = 2f;
 
-                Vector2 healthBarPosition = (character.position - Camera.position + new Vector2(-healthBarWidth / 2f, -character.sprite.origin.Y + character.sprite.mask.Bottom + healthBarOffset)) * Camera.Scale;
+                Vector2 healthBarPosition = (character.position - Camera.Position + new Vector2(-healthBarWidth / 2f, -character.sprite.origin.Y + character.sprite.mask.Bottom + healthBarOffset)) * Camera.Scale;
 
-                Game1.spriteBatch.Draw(TextureManager.Pixel, healthBarPosition, null, Color.Black, 0f, Vector2.Zero, new Vector2(healthBarWidth, healthBarHeight) * Camera.Scale, SpriteEffects.None, 0f);
-                Game1.spriteBatch.Draw(TextureManager.Pixel, healthBarPosition, null, Color.White, 0f, Vector2.Zero, new Vector2(healthBarWidth * ((float)character.health / character.healthMax), healthBarHeight) * Camera.Scale, SpriteEffects.None, 0f);
+                Game1.SpriteBatch.Draw(TextureManager.Pixel, healthBarPosition, null, Color.Black, 0f, Vector2.Zero, new Vector2(healthBarWidth, healthBarHeight) * Camera.Scale, SpriteEffects.None, 0f);
+                Game1.SpriteBatch.Draw(TextureManager.Pixel, healthBarPosition, null, Color.White, 0f, Vector2.Zero, new Vector2(healthBarWidth * ((float)character.health / character.healthMax), healthBarHeight) * Camera.Scale, SpriteEffects.None, 0f);
             }
         }
     }

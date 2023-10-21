@@ -1,40 +1,39 @@
 ﻿using Cosmic.Tiles;
 
-namespace Cosmic.TileMap {
+namespace Cosmic.Worlds {
     using Microsoft.Xna.Framework;
     using Cosmic.Entities;
     using System;
     using System.Collections.Generic;
-    using Cosmic.Worlds;
     using Cosmic;
     using Cosmic.Assets;
 
-    public class TileMap {
+    public class WorldTileMap {
         public int Width => tiles.GetLength(0);
         public int Height => tiles.GetLength(1);
 
-        private TileMapTile[,] tiles;
+        private WorldTileMapTile[,] tiles;
         private float tileBrightness;
 
         public World world;
 
-        public TileMap(int width, int height, World world, float tileBrightness = 1f) {
-            tiles = new TileMapTile[width, height];
+        public WorldTileMap(int width, int height, World world, float tileBrightness = 1f) {
+            tiles = new WorldTileMapTile[width, height];
             this.tileBrightness = tileBrightness;
 
             this.world = world;
         }
 
         public void Draw() {
-            Rectangle cameraTileRectangle = new Rectangle(new Point((int)Math.Floor(Camera.position.X / Tile.Size), (int)Math.Floor(Camera.position.Y / Tile.Size)), new Point((int)Math.Ceiling((float)Camera.Width / Tile.Size) + 1, (int)Math.Ceiling((float)Camera.Height / Tile.Size) + 1));
+            Rectangle cameraTileRectangle = new Rectangle(new Point((int)Math.Floor(Camera.Position.X / Tile.Size), (int)Math.Floor(Camera.Position.Y / Tile.Size)), new Point((int)Math.Ceiling((float)Camera.Width / Tile.Size) + 1, (int)Math.Ceiling((float)Camera.Height / Tile.Size) + 1));
 
             for (int y = cameraTileRectangle.Top; y < cameraTileRectangle.Bottom; y++) {
                 for (int x = cameraTileRectangle.Left; x < cameraTileRectangle.Right; x++) {
                     if (GetTile(x, y) != null) {
-                        Game1.spriteBatch.Draw(tiles[x, y].tile.textureSheet.textures[tiles[x, y].textureIndex], new Vector2(x, y) * Tile.Size, new Color(tileBrightness, tileBrightness, tileBrightness));
+                        Game1.SpriteBatch.Draw(tiles[x, y].tile.textureSheet.Textures[tiles[x, y].textureIndex], new Vector2(x, y) * Tile.Size, new Color(tileBrightness, tileBrightness, tileBrightness));
 
                         if (tiles[x, y].life > 0 && tiles[x, y].life < tiles[x, y].tile.life) {
-                            Game1.spriteBatch.Draw(TextureManager.Tiles_TileLife.textures[(int)((1f - (float)tiles[x, y].life / tiles[x, y].tile.life) * TextureManager.Tiles_TileLife.textures.Length)], new Vector2(x, y) * Tile.Size, Color.White);
+                            Game1.SpriteBatch.Draw(TextureManager.Tiles_TileLife.Textures[(int)((1f - (float)tiles[x, y].life / tiles[x, y].tile.life) * TextureManager.Tiles_TileLife.Textures.Length)], new Vector2(x, y) * Tile.Size, Color.White);
                         }
                     }
                 }
@@ -50,7 +49,7 @@ namespace Cosmic.TileMap {
                 return;
             }
 
-            tiles[x, y] = new TileMapTile(tile, this, (ushort)x, (ushort)y);
+            tiles[x, y] = new WorldTileMapTile(tile, this, (ushort)x, (ushort)y);
 
             if (refreshTileTextureIndices) {
                 for (int ry = y - 1; ry <= y + 1; ry++) {
@@ -110,12 +109,12 @@ namespace Cosmic.TileMap {
             }
         }
 
-        public TileMapTile GetTile(int x, int y) {
-            return (x >= 0 && y >= 0 && x < Width && y < Height) ? tiles[x, y] : null;
+        public WorldTileMapTile GetTile(int x, int y) {
+            return x >= 0 && y >= 0 && x < Width && y < Height ? tiles[x, y] : null;
         }
 
         public bool GetTileCollisionWithEntity<T>(int x, int y, Predicate<T> predicate = null) where T : Entity {
-            foreach (Entity entity in EntityManager.entities) {
+            foreach (Entity entity in EntityManager.Entities) {
                 if (entity is T) {
                     if (predicate?.Invoke((T)entity) ?? true) {
                         if (GetTile(x, y).GetPolygon().GetCollisionWithPolygon(entity.collider.polygon)) {
@@ -131,7 +130,7 @@ namespace Cosmic.TileMap {
         public bool GetTilePositionCollisionWithEntity<T>(int x, int y, Predicate<T> predicate = null) where T : Entity {
             Polygon polygon = new Polygon(() => Polygon.GetRectangleVertices(new Vector2(Tile.Size)), () => new Vector2(x, y) * Tile.Size);
 
-            foreach (Entity entity in EntityManager.entities) {
+            foreach (Entity entity in EntityManager.Entities) {
                 if (entity is T) {
                     if (predicate?.Invoke((T)entity) ?? true) {
                         if (polygon.GetCollisionWithPolygon(entity.collider.polygon)) {
@@ -144,12 +143,12 @@ namespace Cosmic.TileMap {
             return false;
         }
 
-        public List<TileMapTile> GetTilesWithinRange(int cx, int cy, int range) {
-            List<TileMapTile> tiles = new List<TileMapTile>();
+        public List<WorldTileMapTile> GetTilesWithinRange(int cx, int cy, int range) {
+            List<WorldTileMapTile> tiles = new List<WorldTileMapTile>();
 
             for (int y = cy - (int)Math.Floor(range / 2f); y < cy + Math.Ceiling(range / 2f); y++) {
                 for (int x = cx - (int)Math.Floor(range / 2f); x < cx + Math.Ceiling(range / 2f); x++) {
-                    TileMapTile tile = GetTile(x, y);
+                    WorldTileMapTile tile = GetTile(x, y);
 
                     if (tile != null) {
                         tiles.Add(tile);
@@ -160,15 +159,15 @@ namespace Cosmic.TileMap {
             return tiles;
         }
 
-        public List<TileMapTile> GetTilesIntersectingPolygon(Polygon polygon) {
-            List<TileMapTile> tiles = new List<TileMapTile>();
+        public List<WorldTileMapTile> GetTilesIntersectingPolygon(Polygon polygon) {
+            List<WorldTileMapTile> tiles = new List<WorldTileMapTile>();
 
             Point topLeft = GetWorldToTilePosition(polygon.GetTopLeft());
             Point bottomRight = GetWorldToTilePosition(polygon.GetBottomRight());
 
             for (int y = topLeft.Y; y < bottomRight.Y; y++) {
                 for (int x = topLeft.X; x < bottomRight.X; x++) {
-                    TileMapTile tile = GetTile(x, y);
+                    WorldTileMapTile tile = GetTile(x, y);
 
                     if (tile != null) {
                         if (tile.GetPolygon().GetCollisionWithPolygon(polygon)) {

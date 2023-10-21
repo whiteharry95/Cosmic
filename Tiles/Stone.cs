@@ -8,7 +8,7 @@
 
             life = 30;
 
-            item = ItemManager.stoneBlock;
+            item = ItemManager.StoneBlock;
         }
     }
 }

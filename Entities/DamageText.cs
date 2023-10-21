@@ -10,7 +10,7 @@
         public float alphaChange = 0.2f;
 
         public override void Init() {
-            velocity.Y = -(Game1.random.Next(40, 61) / 10f);
+            velocity.Y = -(Game1.Random.Next(40, 61) / 10f);
         }
 
         public override void Update() {

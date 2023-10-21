@@ -13,7 +13,7 @@
 
         public override void Update() {
             velocity.X += Math.Min(moveSpeedChange, Math.Abs(velocity.X)) * -Math.Sign(velocity.X);
-            velocity.Y += Math.Min(world.fallSpeed, Math.Abs(world.fallSpeedMax - velocity.Y)) * Math.Sign(world.fallSpeedMax - velocity.Y);
+            velocity.Y += Math.Min(world.FallSpeed, Math.Abs(world.FallSpeedMax - velocity.Y)) * Math.Sign(world.FallSpeedMax - velocity.Y);
 
             if (velocity.X != 0f) {
                 if (collider.GetCollisionWithTiles(new Vector2(velocity.X, 0f))) {
@@ -36,11 +36,11 @@
             if (shootTime < nPC.shootTime) {
                 shootTime++;
             } else {
-                Vector2 bulletDirection = MathUtilities.GetNormalisedVector2(EntityManager.player.position - position);
+                Vector2 bulletDirection = MathUtilities.GetNormalisedVector2(EntityManager.Player.position - position);
 
                 if (bulletDirection != Vector2.Zero) {
                     BulletEntity bullet = EntityManager.AddEntity<BulletEntity>(position, world, projectileEntity => projectileEntity.projectile = ProjectileManager.copperBullet);
-                    bullet.rotation = MathUtilities.GetDirectionBetweenPositions(position, EntityManager.player.position);
+                    bullet.rotation = MathF.Atan2(EntityManager.Player.position.Y - position.Y, EntityManager.Player.position.X - position.X);
                     bullet.velocity = bulletDirection * 10f;
                     bullet.damage = 3;
                     bullet.strength = 2.5f;

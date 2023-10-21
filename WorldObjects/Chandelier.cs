@@ -8,7 +8,7 @@
 
             life = 45;
 
-            item = ItemManager.chandelier;
+            item = ItemManager.Chandelier;
 
             placeType = PlaceType.Ceiling;
         }

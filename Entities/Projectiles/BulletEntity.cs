@@ -1,10 +1,11 @@
-﻿namespace Cosmic.Entities.Projectiles {
+﻿namespace Cosmic.Entities.Projectiles
+{
     using Cosmic.Entities.Characters;
-    using Cosmic.TileMap;
     using Cosmic.Utilities;
     using System.Collections.Generic;
     using System;
     using Cosmic.Projectiles.Bullets;
+    using Cosmic.Worlds;
 
     public class BulletEntity : ProjectileEntity<Bullet> {
         public override void Update() {
@@ -15,8 +16,8 @@
 
                 bool destroy = false;
 
-                if (collider.GetCollisionWithTiles(out List<TileMapTile> tileMapTiles)) {
-                    foreach (TileMapTile tileMapTile in tileMapTiles) {
+                if (collider.GetCollisionWithTiles(out List<WorldTileMapTile> tileMapTiles)) {
+                    foreach (WorldTileMapTile tileMapTile in tileMapTiles) {
                         tileMapTile.Mine(1);
                     }
 

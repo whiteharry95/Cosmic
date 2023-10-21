@@ -8,7 +8,7 @@
 
             life = 15;
 
-            item = ItemManager.dirtBlock;
+            item = ItemManager.DirtBlock;
         }
     }
 }

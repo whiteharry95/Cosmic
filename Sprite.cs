@@ -49,7 +49,7 @@
                 drawOrigin.Y = texture.Height - drawOrigin.Y;
             }
 
-            Game1.spriteBatch.Draw(texture, position, null, colour ?? Color.White, rotation, drawOrigin, scale ?? Vector2.One, flip, 0f);
+            Game1.SpriteBatch.Draw(texture, position, null, colour ?? Color.White, rotation, drawOrigin, scale ?? Vector2.One, flip, 0f);
         }
 
         public Vector2 GetOriginFromPreset(OriginPreset originPreset) {

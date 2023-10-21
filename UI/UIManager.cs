@@ -3,8 +3,8 @@
     using System.Collections.Generic;
 
     public static class UIManager {
-        public static int Width => Game1.graphicsDeviceManager.PreferredBackBufferWidth;
-        public static int Height => Game1.graphicsDeviceManager.PreferredBackBufferHeight;
+        public static int Width => Game1.GraphicsDeviceManager.PreferredBackBufferWidth;
+        public static int Height => Game1.GraphicsDeviceManager.PreferredBackBufferHeight;
 
         public static List<UIElement> uIElements;
 

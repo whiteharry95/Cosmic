@@ -1,16 +1,16 @@
 ﻿using Cosmic.Tiles;
 
-namespace Cosmic.TileMap {
+namespace Cosmic.Worlds {
     using Microsoft.Xna.Framework;
     using Cosmic;
     using Cosmic.Entities;
     using System.Collections.Generic;
     using Cosmic.WorldObjects;
 
-    public class TileMapTile {
+    public class WorldTileMapTile {
         public Tile tile;
 
-        public TileMap tileMap;
+        public WorldTileMap tileMap;
 
         public ushort x;
         public ushort y;
@@ -19,7 +19,7 @@ namespace Cosmic.TileMap {
 
         public byte textureIndex;
 
-        public TileMapTile(Tile tile, TileMap tileMap, ushort x, ushort y) {
+        public WorldTileMapTile(Tile tile, WorldTileMap tileMap, ushort x, ushort y) {
             this.tile = tile;
 
             this.tileMap = tileMap;
@@ -56,7 +56,7 @@ namespace Cosmic.TileMap {
                     }
 
                     if (worldObjectPlaceTypePolygon?.GetCollisionWithPolygon(worldObjectEntity.collider.polygon) ?? false) {
-                        EntityManager.AddEntity<ItemDrop>(worldObjectEntity.position + worldObjectEntity.sprite.mask.Location.ToVector2() + (worldObjectEntity.sprite.mask.Size.ToVector2() / 2f), worldObjectEntity.world, itemDrop => itemDrop.item = worldObjectEntity.worldObject.item);
+                        EntityManager.AddEntity<ItemDrop>(worldObjectEntity.position + worldObjectEntity.sprite.mask.Location.ToVector2() + worldObjectEntity.sprite.mask.Size.ToVector2() / 2f, worldObjectEntity.world, itemDrop => itemDrop.item = worldObjectEntity.worldObject.item);
                         worldObjectEntity.Destroy();
                     }
                 }

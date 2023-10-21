@@ -43,7 +43,7 @@
                         break;
                 }
 
-                Game1.spriteBatch.DrawString(font, line, position - origin, colour);
+                Game1.SpriteBatch.DrawString(font, line, position - origin, colour);
 
                 position.Y += lineSize.Y;
             }

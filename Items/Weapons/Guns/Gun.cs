@@ -8,22 +8,24 @@
     using System;
 
     public class Gun : Weapon {
-        public float projectileOffset;
-        public float projectileSpeed;
-        public int projectileDamage;
-        public float projectileStrength;
+        protected float projectileOffset;
+        protected float projectileSpeed;
+        protected int projectileDamage;
+        protected float projectileStrength;
 
         public override void Load() {
             displayRotation = -MathF.PI / 4f;
         }
 
         public override void OnPrimaryUse() {
-            Vector2 bulletDirection = MathUtilities.GetNormalisedVector2(InputManager.GetMouseWorldPosition() - EntityManager.player.position);
+            Vector2 mouseWorldPosition = InputManager.GetMouseWorldPosition();
+            
+            Vector2 bulletDirection = MathUtilities.GetNormalisedVector2(mouseWorldPosition - EntityManager.Player.position);
 
             if (bulletDirection != Vector2.Zero) {
-                BulletEntity bullet = EntityManager.AddEntity<BulletEntity>(EntityManager.player.position + bulletDirection * projectileOffset, EntityManager.player.world, bulletEntity => bulletEntity.projectile = ProjectileManager.copperBullet);
-                bullet.rotation = MathUtilities.GetDirectionBetweenPositions(EntityManager.player.position, InputManager.GetMouseWorldPosition());
-                bullet.velocity = bulletDirection * projectileSpeed;
+                BulletEntity bullet = EntityManager.AddEntity<BulletEntity>(EntityManager.Player.position + (bulletDirection * projectileOffset), EntityManager.Player.world, bulletEntity => bulletEntity.projectile = ProjectileManager.copperBullet);
+                bullet.rotation = MathF.Atan2(mouseWorldPosition.Y - EntityManager.Player.position.Y, mouseWorldPosition.X - EntityManager.Player.position.X);
+                bullet.velocity = projectileSpeed * bulletDirection;
                 bullet.damage = projectileDamage;
                 bullet.strength = projectileStrength;
             }

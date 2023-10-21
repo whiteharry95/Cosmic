@@ -5,40 +5,48 @@
     using System.Collections.Generic;
     using System;
     using System.Linq;
+    using Cosmic.Entities.Characters.NPCs;
+    using Cosmic.NPCs;
 
     public static class EntityManager {
-        public static List<Entity> entities;
+        public static List<Entity> Entities { get; private set; }
 
-        public static Player player;
+        public static Player Player;
 
         public static void Init() {
-            entities = new List<Entity>();
+            Entities = new List<Entity>();
+        }
+
+        public static void Load() {
+            Player = AddEntity<Player>(new Vector2(128f), WorldManager.WorldCurrent);
+
+            AddEntity<ShooterEntity>(Player.position + new Vector2(128f, 0f), WorldManager.WorldCurrent, shooterEntity => shooterEntity.nPC = NPCManager.GreenShooter);
         }
 
         public static void Update() {
-            Entity[] entitiesPrevious = entities.ToArray();
+            Entity[] entitiesAsArray = Entities.ToArray();
 
-            foreach (Entity entity in entitiesPrevious) {
+            foreach (Entity entity in entitiesAsArray) {
                 entity.Update();
             }
         }
 
         public static void Draw() {
-            Entity[] entitiesPreviousDrawOrdered = entities.OrderBy((Entity entity) => entity.drawLayer).ToArray();
+            List<Entity> entitiesSortedByDrawLayer = Entities.OrderBy(entity => entity.drawLayer).ToList();
 
-            foreach (Entity entity in entitiesPreviousDrawOrdered) {
+            foreach (Entity entity in entitiesSortedByDrawLayer) {
                 if (entity.world == WorldManager.WorldCurrent) {
                     entity.Draw();
                 }
             }
         }
 
-        public static T AddEntity<T>(Vector2 position, World world = null, Action<T> preInitAction = null) where T : Entity {
+        public static T AddEntity<T>(Vector2 position, World world, Action<T> preInitAction = null) where T : Entity {
             T entity = Activator.CreateInstance<T>();
             entity.position = position;
-            entity.world = world ?? WorldManager.WorldCurrent;
+            entity.world = world;
 
-            entities.Add(entity);
+            Entities.Add(entity);
 
             preInitAction?.Invoke(entity);
             entity.Init();
@@ -47,7 +55,7 @@
         }
 
         public static List<Entity> GetEntitiesInWorld(World world = null) {
-            return entities.FindAll(entity => entity.world == (world ?? WorldManager.WorldCurrent));
+            return Entities.FindAll(entity => entity.world == (world ?? WorldManager.WorldCurrent));
         }
 
         public static List<T> GetEntitiesIntersectingPolygon<T>(Polygon polygon, World world = null) where T : Entity {

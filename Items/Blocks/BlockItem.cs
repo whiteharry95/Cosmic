@@ -1,11 +1,12 @@
-﻿namespace Cosmic.Items.Blocks {
+﻿namespace Cosmic.Items.Blocks
+{
     using Microsoft.Xna.Framework;
     using Cosmic.Tiles;
-    using Cosmic.TileMap;
     using Cosmic.Entities;
+    using Cosmic.Worlds;
 
     public class BlockItem : Item {
-        public Tile tile;
+        protected Tile tile;
 
         public override void Load() {
             stack = 999;
@@ -21,17 +22,23 @@
         }
 
         protected virtual void Place(bool wall) {
-            foreach (Point tilePosition in EntityManager.player.tileSelection) {
-                TileMap tileMap = wall ? EntityManager.player.world.tileMapWalls : EntityManager.player.world.tileMap;
+            for (int y = 0; y < EntityManager.Player.TileSelection.GetLength(1); y++) {
+                for (int x = 0; x < EntityManager.Player.TileSelection.GetLength(0); x++) {
+                    if (EntityManager.Player.TileSelection[x, y]) {
+                        WorldTileMap tileMap = wall ? EntityManager.Player.world.TileMapWalls : EntityManager.Player.world.TileMap;
 
-                if (tilePosition.X < 0 || tilePosition.Y < 0 || tilePosition.X >= tileMap.Width || tilePosition.Y >= tileMap.Height) {
-                    continue;
-                }
+                        Point tileSelectionElementPosition = EntityManager.Player.TileSelectionPosition + new Point(x, y);
 
-                if (tileMap.GetTile(tilePosition.X, tilePosition.Y) == null) {
-                    if (!tileMap.GetTilePositionCollisionWithEntity<Entity>(tilePosition.X, tilePosition.Y, entity => !(entity is Hitbox) && !(entity is DamageText)) || wall) {
-                        tileMap.PlaceTile(tilePosition.X, tilePosition.Y, tile);
-                        EntityManager.player.inventory.RemoveItem(this);
+                        if (tileSelectionElementPosition.X < 0 || tileSelectionElementPosition.Y < 0 || tileSelectionElementPosition.X >= tileMap.Width || tileSelectionElementPosition.Y >= tileMap.Height) {
+                            continue;
+                        }
+
+                        if (tileMap.GetTile(tileSelectionElementPosition.X, tileSelectionElementPosition.Y) == null) {
+                            if (!tileMap.GetTilePositionCollisionWithEntity<Entity>(tileSelectionElementPosition.X, tileSelectionElementPosition.Y, entity => !(entity is Hitbox) && !(entity is DamageText)) || wall) {
+                                tileMap.PlaceTile(tileSelectionElementPosition.X, tileSelectionElementPosition.Y, tile);
+                                EntityManager.Player.Inventory.RemoveItem(this);
+                            }
+                        }
                     }
                 }
             }

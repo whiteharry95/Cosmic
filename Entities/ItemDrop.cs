@@ -39,8 +39,8 @@
             if (pickupTime == 0) {
                 pickup = false;
 
-                if ((EntityManager.player?.GetExists() ?? false) && EntityManager.player?.world == world) {
-                    if (Vector2.Distance(position, EntityManager.player.position) <= pickupDistance) {
+                if ((EntityManager.Player?.GetExists() ?? false) && EntityManager.Player?.world == world) {
+                    if (Vector2.Distance(position, EntityManager.Player.position) <= pickupDistance) {
                         pickup = true;
                     }
                 }
@@ -51,10 +51,10 @@
             }
 
             if (pickup) {
-                velocity = MathUtilities.GetNormalisedVector2(EntityManager.player.position - position) * pickupSpeed;
+                velocity = MathUtilities.GetNormalisedVector2(EntityManager.Player.position - position) * pickupSpeed;
             } else {
                 velocity.X += Math.Min(moveSpeedChange, Math.Abs(velocity.X)) * -Math.Sign(velocity.X);
-                velocity.Y += Math.Min(world.fallSpeed, Math.Abs(world.fallSpeedMax - velocity.Y)) * Math.Sign(world.fallSpeedMax - velocity.Y);
+                velocity.Y += Math.Min(world.FallSpeed, Math.Abs(world.FallSpeedMax - velocity.Y)) * Math.Sign(world.FallSpeedMax - velocity.Y);
 
                 if (velocity.X != 0f) {
                     if (collider.GetCollisionWithTiles(new Vector2(velocity.X, 0f))) {

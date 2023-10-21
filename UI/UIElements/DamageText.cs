@@ -14,7 +14,7 @@
             List<Entities.DamageText> damageTexts = EntityManager.GetEntitiesInWorld().OfType<Entities.DamageText>().ToList();
 
             foreach (Entities.DamageText damageText in damageTexts) {
-                DrawUtilities.DrawText(FontManager.ArialSmall, (-damageText.damage).ToString(), (damageText.position - Camera.position) * Camera.Scale, Color.White * damageText.alpha, DrawUtilities.HorizontalAlignment.Centre, DrawUtilities.VerticalAlignment.Middle);
+                DrawUtilities.DrawText(FontManager.ArialSmall, (-damageText.damage).ToString(), (damageText.position - Camera.Position) * Camera.Scale, Color.White * damageText.alpha, DrawUtilities.HorizontalAlignment.Centre, DrawUtilities.VerticalAlignment.Middle);
             }
         }
     }

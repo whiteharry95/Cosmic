@@ -2,33 +2,35 @@
     using Cosmic.Tiles;
     using Microsoft.Xna.Framework.Content;
     using Microsoft.Xna.Framework.Graphics;
+    using System.Collections.Generic;
 
     public static class TextureManager {
-        public static Texture2D Pixel;
+        public static List<Texture2D> TexturesToDispose { get; private set; } = new List<Texture2D>();
 
-        public static Texture2D Characters_Player;
-        public static Texture2D Characters_NPCs_Shooters_GreenShooter;
+        public static Texture2D Pixel { get; private set; }
 
-        public static TextureSheet Tiles_Dirt;
-        public static TextureSheet Tiles_Stone;
+        public static Texture2D Characters_Player { get; private set; }
+        public static Texture2D Characters_NPCs_Shooters_GreenShooter { get; private set; }
 
-        public static TextureSheet Tiles_TileLife;
+        public static TextureSheet Tiles_Dirt { get; private set; }
+        public static TextureSheet Tiles_Stone { get; private set; }
+        public static TextureSheet Tiles_TileLife { get; private set; }
 
-        public static Texture2D WorldObjects_Rock;
-        public static Texture2D WorldObjects_Chandelier;
+        public static Texture2D WorldObjects_Rock { get; private set; }
+        public static Texture2D WorldObjects_Chandelier { get; private set; }
 
-        public static Texture2D Projectiles_Bullets_CopperBullet;
+        public static Texture2D Projectiles_Bullets_CopperBullet { get; private set; }
 
-        public static Texture2D UI_Cursor;
-        public static Texture2D UI_InventorySlot;
+        public static Texture2D UI_Cursor { get; private set; }
+        public static Texture2D UI_InventorySlot { get; private set; }
 
-        public static Texture2D Entities_Hitbox;
+        public static Texture2D Entities_Hitbox { get; private set; }
 
-        public static Texture2D Items_Guns_MachineGun;
-        public static Texture2D Items_Drills_CopperDrill;
-        public static Texture2D Items_Swords_WoodenSword;
-        public static Texture2D Items_WorldTeleporter;
-        public static Texture2D Items_WorldBuilder;
+        public static Texture2D Items_Guns_MachineGun { get; private set; }
+        public static Texture2D Items_Drills_CopperDrill { get; private set; }
+        public static Texture2D Items_Swords_WoodenSword { get; private set; }
+        public static Texture2D Items_WorldTeleporter { get; private set; }
+        public static Texture2D Items_WorldBuilder { get; private set; }
 
         public static void Load(ContentManager contentManager) {
             Pixel = contentManager.Load<Texture2D>("Textures/Pixel");
@@ -38,7 +40,6 @@
 
             Tiles_Dirt = new TextureSheet(contentManager.Load<Texture2D>("Textures/Tiles/Dirt"), Tile.Size, Tile.Size);
             Tiles_Stone = new TextureSheet(contentManager.Load<Texture2D>("Textures/Tiles/Stone"), Tile.Size, Tile.Size);
-
             Tiles_TileLife = new TextureSheet(contentManager.Load<Texture2D>("Textures/Tiles/TileLife"), Tile.Size, Tile.Size);
 
             WorldObjects_Rock = contentManager.Load<Texture2D>("Textures/WorldObjects/Rock");
@@ -56,6 +57,12 @@
             Items_Swords_WoodenSword = contentManager.Load<Texture2D>("Textures/Items/Swords/WoodenSword");
             Items_WorldTeleporter = contentManager.Load<Texture2D>("Textures/Items/WorldTeleporter");
             Items_WorldBuilder = contentManager.Load<Texture2D>("Textures/Items/WorldBuilder");
+        }
+
+        public static void Unload() {
+            foreach (Texture2D texture in TexturesToDispose) {
+                texture.Dispose();
+            }
         }
     }
 }

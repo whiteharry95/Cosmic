@@ -10,26 +10,30 @@
     using System.Collections.Generic;
     using Cosmic.UI;
     using Cosmic.Inventory;
-    using Cosmic.TileMap;
     using Cosmic.UI.UIElements;
     using Cosmic.Assets;
     using Cosmic.Utilities;
     using Microsoft.Xna.Framework.Graphics;
     using Cosmic.Items.WorldObjects;
-    using System.Diagnostics;
+    using Cosmic.Worlds;
 
     public class Player : Character {
-        public Item ItemCurrent => inventory.slots[UIManager.playerInventory.hotBarSlotSelectedIndex]?.item;
+        public bool[,] TileSelection { get; private set; }
+        public Point TileSelectionPosition { get; private set; }
 
-        public int itemUseTime;
-        public float itemRotationOffset;
+        public Inventory Inventory { get; private set; }
+
+        public Item ItemCurrent => Inventory.slots[UIManager.playerInventory.hotBarSlotSelectedIndex]?.item;
+
+        private int itemUseTime;
+        private float itemRotationOffset;
         public float itemRotationOffsetAxis = 1f;
         private float itemRotationOffsetSpeed = 0.5f;
 
-        public Vector2 itemDropTossVelocity = new Vector2(4.5f, -1f);
+        private Vector2 itemDropTossVelocity = new Vector2(4.5f, -1f);
 
-        public float moveSpeedChange = 0.3f;
-        public float moveSpeedMax = 3f;
+        private float moveSpeedChange = 0.3f;
+        private float moveSpeedMax = 3f;
 
         private float jumpSpeed = 3f;
         private int jumpTime;
@@ -45,32 +49,31 @@
         private int dashBreakTime;
         private int dashBreakTimeMax = 45;
 
-        public Inventory inventory;
-
-        public Tiles.TileSelection[,] tileSelection;
-        public Point tileSelectionSize;
-        public Point tileSelectionSizeMax = new Point(5);
-        public int tileSelectionRange = 16;
+        private Point tileSelectionSize;
+        private Point tileSelectionSizeMax = new Point(5);
+        private int tileSelectionRange = 16;
 
         public override void Init() {
-            drawLayer = DrawLayer.Player;
-
             healthMax = 250;
             health = healthMax;
+
+            drawLayer = DrawLayer.Players;
 
             sprite = new Sprite(TextureManager.Characters_Player, Sprite.OriginPreset.MiddleCentre);
             collider = new EntityCollider(this);
 
-            inventory = new Inventory(PlayerInventory.RowSize * 5);
-            inventory.AddItem(ItemManager.stoneBlock, 950);
-            inventory.AddItem(ItemManager.stoneBlock, 51, 10);
-            inventory.AddItem(ItemManager.rock, 100);
-            inventory.AddItem(ItemManager.chandelier, 100);
-            inventory.AddItem(ItemManager.sword, 1);
-            inventory.AddItem(ItemManager.gun, 1);
-            inventory.AddItem(ItemManager.copperDrill, 1);
-            inventory.AddItem(ItemManager.worldTeleporter, 1);
-            inventory.AddItem(ItemManager.worldBuilder, 1);
+            Inventory = new Inventory(PlayerInventory.RowSize * 5);
+            Inventory.AddItem(ItemManager.StoneBlock, 950);
+            Inventory.AddItem(ItemManager.StoneBlock, 51, 10);
+            Inventory.AddItem(ItemManager.Rock, 100);
+            Inventory.AddItem(ItemManager.Chandelier, 100);
+            Inventory.AddItem(ItemManager.WoodenSword, 1);
+            Inventory.AddItem(ItemManager.Gun, 1);
+            Inventory.AddItem(ItemManager.CopperDrill, 1);
+            Inventory.AddItem(ItemManager.WorldTeleporter, 1);
+            Inventory.AddItem(ItemManager.WorldBuilder, 1);
+
+            tileSelectionSize = tileSelectionSizeMax;
         }
 
         public override void Update() {
@@ -78,14 +81,14 @@
             bool keyHeldSpace = InputManager.GetKeyHeld(Keys.Space);
 
             int moveSpeedAxis = Convert.ToInt32(InputManager.GetKeyHeld(Keys.D)) - Convert.ToInt32(InputManager.GetKeyHeld(Keys.A));
-            float horizontalSpeedDest = moveSpeedMax * moveSpeedAxis;
+            float horizontalSpeedTo = moveSpeedMax * moveSpeedAxis;
 
-            velocity.X += Math.Min(moveSpeedChange, Math.Abs(horizontalSpeedDest - velocity.X)) * Math.Sign(horizontalSpeedDest - velocity.X);
+            velocity.X += Math.Min(moveSpeedChange, Math.Abs(horizontalSpeedTo - velocity.X)) * Math.Sign(horizontalSpeedTo - velocity.X);
 
             bool fly = canFly && keyHeldSpace;
-            float verticalSpeedDest = fly ? -flySpeedMax : world.fallSpeedMax;
+            float verticalSpeedTo = fly ? -flySpeedMax : world.FallSpeedMax;
 
-            velocity.Y += Math.Min(fly ? flySpeedChange : world.fallSpeed, Math.Abs(verticalSpeedDest - velocity.Y)) * Math.Sign(verticalSpeedDest - velocity.Y);
+            velocity.Y += Math.Min(fly ? flySpeedChange : world.FallSpeed, Math.Abs(verticalSpeedTo - velocity.Y)) * Math.Sign(verticalSpeedTo - velocity.Y);
 
             if (!canFly) {
                 if (InputManager.GetKeyPressed(Keys.Space)) {
@@ -157,12 +160,29 @@
                 }
             }
 
+            if (velocity != Vector2.Zero) {
+                bool makeContact = false;
+
+                while (collider.GetCollisionWithTiles(velocity, tileMapTile => (tileMapTile.textureIndex == 3 || tileMapTile.textureIndex == 4) && (position.Y - sprite.origin.Y + sprite.Size.Y - Tile.Size + velocity.Y <= tileMapTile.y * Tile.Size))) {
+                    position.Y--;
+                    makeContact = true;
+                }
+
+                if (collider.GetCollisionWithTiles(velocity)) {
+                    velocity.X = 0f;
+                }
+
+                if (makeContact) {
+                    collider.MakeContactWithTiles(1f, MathUtilities.Direction.Down);
+                }
+            }
+
             base.Update();
 
             if (collider.GetCollisionWithEntities(out List<ItemDrop> itemDrops)) {
                 foreach (ItemDrop itemDrop in itemDrops) {
                     if (itemDrop.pickupTime == 0) {
-                        int quantity = inventory.AddItem(itemDrop.item, itemDrop.quantity);
+                        int quantity = Inventory.AddItem(itemDrop.item, itemDrop.quantity);
 
                         if (quantity > 0) {
                             itemDrop.quantity = quantity;
@@ -173,10 +193,10 @@
                 }
             }
 
-            if (inventory.slots[UIManager.playerInventory.hotBarSlotSelectedIndex] != null) {
+            if (Inventory.slots[UIManager.playerInventory.hotBarSlotSelectedIndex] != null) {
                 if (InputManager.GetKeyPressed(Keys.Q)) {
-                    TossItemDrop(ItemCurrent, inventory.slots[UIManager.playerInventory.hotBarSlotSelectedIndex].quantity);
-                    inventory.RemoveItem(ItemCurrent, inventory.slots[UIManager.playerInventory.hotBarSlotSelectedIndex].quantity, UIManager.playerInventory.hotBarSlotSelectedIndex, true);
+                    TossItemDrop(ItemCurrent, Inventory.slots[UIManager.playerInventory.hotBarSlotSelectedIndex].quantity);
+                    Inventory.RemoveItem(ItemCurrent, Inventory.slots[UIManager.playerInventory.hotBarSlotSelectedIndex].quantity, UIManager.playerInventory.hotBarSlotSelectedIndex, true);
                 }
             }
 
@@ -192,40 +212,31 @@
             Point tileSelectionSizeReal = tileSelectionSize;
 
             if (ItemCurrent is BlockItem) {
-                while (tileSelectionSizeReal.X * tileSelectionSizeReal.Y > inventory.slots[UIManager.playerInventory.hotBarSlotSelectedIndex].quantity) {
+                while (tileSelectionSizeReal.X * tileSelectionSizeReal.Y > Inventory.slots[UIManager.playerInventory.hotBarSlotSelectedIndex].quantity) {
                     tileSelectionSizeReal.X = Math.Max(tileSelectionSizeReal.X - 1, 1);
                     tileSelectionSizeReal.Y = Math.Max(tileSelectionSizeReal.Y - 1, 1);
                 }
             } else if (ItemCurrent is WorldObjectItem) {
-                tileSelectionSizeReal.X = (int)Math.Ceiling((float)((WorldObjectItem)ItemCurrent).worldObject.sprite.texture.Width / Tile.Size);
-                tileSelectionSizeReal.Y = (int)Math.Ceiling((float)((WorldObjectItem)ItemCurrent).worldObject.sprite.texture.Height / Tile.Size);
+                tileSelectionSizeReal.X = (int)Math.Ceiling((float)((WorldObjectItem)ItemCurrent).WorldObject.sprite.texture.Width / Tile.Size);
+                tileSelectionSizeReal.Y = (int)Math.Ceiling((float)((WorldObjectItem)ItemCurrent).WorldObject.sprite.texture.Height / Tile.Size);
             }
 
-            tileSelection = new Tiles.TileSelection[tileSelectionSizeReal.X, tileSelectionSizeReal.Y];
+            TileSelection = new bool[tileSelectionSizeReal.X, tileSelectionSizeReal.Y];
 
-            Point tilePosition = TileMap.GetWorldToTilePosition(position + new Vector2(tileSelectionRange % 2f == 0f ? (Tile.Size / 2f) : 0f));
-            Point mouseTilePosition = TileMap.GetWorldToTilePosition(InputManager.GetMouseWorldPosition() + new Vector2(tileSelectionSizeReal.X % 2f == 0f ? (Tile.Size / 2f) : 0f, tileSelectionSizeReal.Y % 2f == 0f ? (Tile.Size / 2f) : 0f));
+            Point tilePosition = WorldTileMap.GetWorldToTilePosition(position + new Vector2(tileSelectionRange % 2f == 0f ? (Tile.Size / 2f) : 0f));
+            Point mouseTilePosition = WorldTileMap.GetWorldToTilePosition(InputManager.GetMouseWorldPosition() + new Vector2(tileSelectionSizeReal.X % 2f == 0f ? (Tile.Size / 2f) : 0f, tileSelectionSizeReal.Y % 2f == 0f ? (Tile.Size / 2f) : 0f));
 
-            for(int y = 0; y < tileSelection.GetLength(1); y++) {
-                for (int x = 0; x < tileSelection.GetLength(0); x++) {
-                    int rx = mouseTilePosition.X - (int)Math.Floor(tileSelectionSizeReal.X / 2f) + x;
-                    int ry = mouseTilePosition.Y - (int)Math.Floor(tileSelectionSizeReal.Y / 2f) + y;
+            TileSelectionPosition = new Point(mouseTilePosition.X - (int)Math.Floor(tileSelectionSizeReal.X / 2f), mouseTilePosition.Y - (int)Math.Floor(tileSelectionSizeReal.Y / 2f));
 
-                    if (rx >= tilePosition.X - (int)Math.Floor(tileSelectionRange / 2f) && ry >= tilePosition.Y - (int)Math.Floor(tileSelectionRange / 2f) && rx <= tilePosition.X + Math.Floor(tileSelectionRange / 2f) && ry <= tilePosition.Y + Math.Floor(tileSelectionRange / 2f)) {
-                        tileSelection[x, y] = new Tiles.TileSelection();
+            for (int y = 0; y < TileSelection.GetLength(1); y++) {
+                for (int x = 0; x < TileSelection.GetLength(0); x++) {
+                    Point tileSelectionElementPosition = TileSelectionPosition + new Point(x, y);
+
+                    if (tileSelectionElementPosition.X >= tilePosition.X - (int)Math.Floor(tileSelectionRange / 2f) && tileSelectionElementPosition.Y >= tilePosition.Y - (int)Math.Floor(tileSelectionRange / 2f) && tileSelectionElementPosition.X <= tilePosition.X + Math.Floor(tileSelectionRange / 2f) && tileSelectionElementPosition.Y <= tilePosition.Y + Math.Floor(tileSelectionRange / 2f)) {
+                        TileSelection[x, y] = true;
                     }
                 }
             }
-
-            /*if (ItemCurrent is WorldObjectItem) {
-                if (tileSelection.GetLength(0) * tileSelection.GetLength(1) != tileSelectionSizeReal.X * tileSelectionSizeReal.Y) {
-                    tileSelection = null;
-                }
-            } else {
-                foreach(Tiles.TileSelection tileSelection in tileSelection) {
-                    
-                }
-            }*/
 
             if (itemUseTime > 0) {
                 itemUseTime--;

@@ -8,7 +8,7 @@
         public enum DrawLayer {
             WorldObjects,
             NPCs,
-            Player,
+            Players,
             ItemDrops,
             Projectiles,
             Debug
@@ -17,19 +17,20 @@
         public Vector2 position;
         public float rotation;
         public Vector2 scale = Vector2.One;
-
+        
         public SpriteEffects flip;
-
-        public Vector2 velocity;
-
+        
         public DrawLayer drawLayer;
 
+        public Vector2 velocity;
+        
         public Sprite sprite;
         public EntityCollider collider;
 
         public World world;
-
-        public abstract void Init();
+        
+        public virtual void Init() {
+        }
 
         public virtual void Update() {
             position += velocity;
@@ -40,11 +41,11 @@
         }
 
         public virtual void Destroy() {
-            EntityManager.entities.Remove(this);
+            EntityManager.Entities.Remove(this);
         }
 
         public bool GetExists() {
-            return EntityManager.entities.Contains(this);
+            return EntityManager.Entities.Contains(this);
         }
     }
 }

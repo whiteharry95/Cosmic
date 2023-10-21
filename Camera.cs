@@ -6,35 +6,37 @@
     using Cosmic.Entities;
 
     public static class Camera {
-        public const int Scale = 2;
+        public static Vector2 Position { get; private set; }
 
-        public static int Width => Game1.graphicsDeviceManager.PreferredBackBufferWidth / Scale;
-        public static int Height => Game1.graphicsDeviceManager.PreferredBackBufferHeight / Scale;
+        public static float Width => (float)Game1.GraphicsDeviceManager.PreferredBackBufferWidth / Scale;
+        public static float Height => (float)Game1.GraphicsDeviceManager.PreferredBackBufferHeight / Scale;
 
-        public static Vector2 Size => new Vector2(Width, Height);
+        public static int Scale => 2;
 
-        public static Vector2 position;
+        private static bool lookSet;
+        private static Vector2 lookPosition;
+        private static float lookSpeed = 0.25f;
+        private static float lookDistance = 64f;
 
-        public static bool lookSet;
-        public static Vector2 lookPosition;
-        public static float lookDistance = 64f;
-        public static float lookSpeed = 0.25f;
+        public static void Load() {
+            lookSet = false;
+        }
 
         public static void Update() {
-            if (EntityManager.player?.GetExists() ?? false) {
-                lookPosition = EntityManager.player.position - (Size / 2f);
+            if (EntityManager.Player?.GetExists() ?? false) {
+                lookPosition = EntityManager.Player.position - (new Vector2(Width, Height) / 2f);
 
                 if (!UIManager.playerInventory.open) {
-                    lookPosition += MathUtilities.GetNormalisedVector2(InputManager.GetMouseWorldPosition() - EntityManager.player.position) * lookDistance * Math.Min(Vector2.Distance(InputManager.GetMouseWorldPosition(), EntityManager.player.position) / (lookDistance * 4f), 1f);
+                    lookPosition += MathUtilities.GetNormalisedVector2(InputManager.GetMouseWorldPosition() - EntityManager.Player.position) * lookDistance * Math.Min(Vector2.Distance(InputManager.GetMouseWorldPosition(), EntityManager.Player.position) / (lookDistance * 4f), 1f);
                 }
             }
 
             if (!lookSet) {
-                position = lookPosition;
+                Position = lookPosition;
                 lookSet = true;
             }
 
-            position += (lookPosition - position) * lookSpeed;
+            Position += (lookPosition - Position) * lookSpeed;
         }
     }
 }

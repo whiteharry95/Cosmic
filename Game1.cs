@@ -9,31 +9,29 @@
     using Microsoft.Xna.Framework.Graphics;
     using Microsoft.Xna.Framework.Input;
     using System;
-    using System.Collections.Generic;
     using Cosmic.Assets;
     using Cosmic.WorldObjects;
     using Cosmic.Worlds;
 
     public class Game1 : Game {
-        public static GraphicsDevice graphicsDeviceStatic;
-        public static GraphicsDeviceManager graphicsDeviceManager;
-        public static SpriteBatch spriteBatch;
+        public static new GraphicsDevice GraphicsDevice { get; private set; }
+        public static GraphicsDeviceManager GraphicsDeviceManager { get; private set; }
 
-        public static Random random = new Random();
+        public static SpriteBatch SpriteBatch { get; private set; }
 
-        public static List<Texture2D> texturesToUnload = new List<Texture2D>();
+        public static Random Random { get; private set; } = new Random();
 
         public Game1() {
-            graphicsDeviceManager = new GraphicsDeviceManager(this);
-            graphicsDeviceManager.PreferredBackBufferWidth = 1920;
-            graphicsDeviceManager.PreferredBackBufferHeight = 1080;
-            graphicsDeviceManager.ApplyChanges();
+            GraphicsDeviceManager = new GraphicsDeviceManager(this);
+            GraphicsDeviceManager.PreferredBackBufferWidth = 1920;
+            GraphicsDeviceManager.PreferredBackBufferHeight = 1080;
+            GraphicsDeviceManager.ApplyChanges();
 
             Content.RootDirectory = "Content";
         }
 
         protected override void Initialize() {
-            graphicsDeviceStatic = GraphicsDevice;
+            GraphicsDevice = base.GraphicsDevice;
 
             TileManager.Init();
             WorldObjectManager.Init();
@@ -46,7 +44,7 @@
         }
 
         protected override void LoadContent() {
-            spriteBatch = new SpriteBatch(GraphicsDevice);
+            SpriteBatch = new SpriteBatch(GraphicsDevice);
 
             TextureManager.Load(Content);
             FontManager.Load(Content);
@@ -60,13 +58,13 @@
             WorldManager.Load();
             WorldManager.Generate();
 
+            EntityManager.Load();
+            
             UIManager.Load();
         }
 
         protected override void UnloadContent() {
-            foreach (Texture2D textureToUnload in texturesToUnload) {
-                textureToUnload.Dispose();
-            }
+            TextureManager.Unload();
         }
 
         protected override void Update(GameTime gameTime) {
@@ -78,8 +76,8 @@
 
             UIManager.EarlyUpdate();
 
-            EntityManager.Update();
             WorldManager.Update();
+            EntityManager.Update();
             Camera.Update();
             UIManager.Update();
 
@@ -89,19 +87,19 @@
         protected override void Draw(GameTime gameTime) {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            spriteBatch.Begin(samplerState: SamplerState.PointClamp, transformMatrix: Matrix.CreateTranslation(new Vector3(-Camera.position, 0f)) * Matrix.CreateScale(new Vector3(new Vector2(Camera.Scale), 0f)));
+            SpriteBatch.Begin(samplerState: SamplerState.PointClamp, transformMatrix: Matrix.CreateTranslation(new Vector3(-Camera.Position, 0f)) * Matrix.CreateScale(new Vector3(new Vector2(Camera.Scale), 0f)));
 
             WorldManager.Draw();
             EntityManager.Draw();
 
-            spriteBatch.End();
-            
-            spriteBatch.Begin(samplerState: SamplerState.PointClamp);
-            
+            SpriteBatch.End();
+
+            SpriteBatch.Begin(samplerState: SamplerState.PointClamp);
+
             UIManager.Draw();
-            
-            spriteBatch.End();
-            
+
+            SpriteBatch.End();
+
             base.Draw(gameTime);
         }
 
@@ -124,7 +122,7 @@
 
             UIManager.Load();
 
-            Camera.lookSet = false;
+            Camera.Load();
         }
     }
 }

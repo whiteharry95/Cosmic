@@ -4,33 +4,33 @@
     using System.Collections.Generic;
 
     public static class NPCManager {
-        private static List<NPC> nPCs;
+        private static List<NPC> nPCS;
 
-        public static GreenShooter greenShooter;
+        public static GreenShooter GreenShooter { get; private set; }
 
         public static void Init() {
-            nPCs = new List<NPC>();
+            nPCS = new List<NPC>();
 
-            greenShooter = AddEnemy<GreenShooter>();
+            GreenShooter = AddNPC<GreenShooter>();
         }
 
         public static void Load() {
-            foreach (NPC enemy in nPCs) {
-                enemy.Load();
+            foreach (NPC nPC in nPCS) {
+                nPC.Load();
             }
         }
 
-        public static T AddEnemy<T>(bool load = false) where T : NPC {
-            T enemy = Activator.CreateInstance<T>();
-            enemy.id = (ushort)nPCs.Count;
+        public static T AddNPC<T>(bool load = false) where T : NPC {
+            T nPC = Activator.CreateInstance<T>();
+            nPC.id = (ushort)nPCS.Count;
 
             if (load) {
-                enemy.Load();
+                nPC.Load();
             }
 
-            nPCs.Add(enemy);
+            nPCS.Add(nPC);
 
-            return enemy;
+            return nPC;
         }
     }
 }

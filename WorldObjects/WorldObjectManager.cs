@@ -3,16 +3,16 @@
     using System;
 
     public static class WorldObjectManager {
+        public static Rock Rock { get; private set; }
+        public static Chandelier Chandelier { get; private set; }
+
         private static List<WorldObject> worldObjects;
-
-        public static Rock rock;
-        public static Chandelier chandelier;
-
+        
         public static void Init() {
             worldObjects = new List<WorldObject>();
 
-            rock = AddWorldObject<Rock>();
-            chandelier = AddWorldObject<Chandelier>();
+            Rock = AddWorldObject<Rock>();
+            Chandelier = AddWorldObject<Chandelier>();
         }
 
         public static void Load() {

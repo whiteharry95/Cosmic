@@ -22,9 +22,8 @@
                 worldCurrentIndex += WorldManager.Worlds.Count;
             }
 
-            WorldManager.WorldCurrent = WorldManager.Worlds[worldCurrentIndex];
-
-            EntityManager.player.world = WorldManager.WorldCurrent;
+            //WorldManager.WorldCurrent = WorldManager.Worlds[worldCurrentIndex];
+            //EntityManager.Player.world = WorldManager.WorldCurrent;
         }
     }
 }

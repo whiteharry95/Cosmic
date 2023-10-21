@@ -1,5 +1,4 @@
-﻿namespace Cosmic.NPCs.Shooters
-{
+﻿namespace Cosmic.NPCs.Shooters {
     using Cosmic.Assets;
 
     public class GreenShooter : Shooter {

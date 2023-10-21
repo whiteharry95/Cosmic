@@ -5,7 +5,7 @@
         public override void Load() {
             name = "Stone Block";
 
-            sprite = new Sprite(TileManager.stone.textureSheet.textures[0], Sprite.OriginPreset.MiddleCentre);
+            sprite = new Sprite(TileManager.stone.textureSheet.Textures[0], Sprite.OriginPreset.MiddleCentre);
 
             tile = TileManager.stone;
 

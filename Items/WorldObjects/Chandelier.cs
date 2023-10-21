@@ -5,9 +5,9 @@
         public override void Load() {
             name = "Chandelier";
 
-            sprite = new Sprite(WorldObjectManager.chandelier.sprite.texture, Sprite.OriginPreset.MiddleCentre);
+            sprite = new Sprite(WorldObjectManager.Chandelier.sprite.texture, Sprite.OriginPreset.MiddleCentre);
 
-            worldObject = WorldObjectManager.chandelier;
+            WorldObject = WorldObjectManager.Chandelier;
 
             base.Load();
         }

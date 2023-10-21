@@ -3,9 +3,9 @@
     using Cosmic.Tiles;
     using System;
     using System.Collections.Generic;
-    using Cosmic.TileMap;
     using Cosmic.Utilities;
     using Cosmic;
+    using Cosmic.Worlds;
 
     public class EntityCollider {
         private const int TileRange = 12;
@@ -56,13 +56,13 @@
             return entities.Count > 0;
         }
 
-        public bool GetCollisionWithTiles(Vector2? offset = null, Predicate<TileMapTile> predicate = null) {
-            Point entityTilePosition = TileMap.GetWorldToTilePosition(entity.position + new Vector2(TileRange % 2f == 0f ? (Tile.Size / 2f) : 0f));
-            List<TileMapTile> tileMapTilesWithinRange = entity.world.tileMap.GetTilesWithinRange(entityTilePosition.X, entityTilePosition.Y, TileRange);
+        public bool GetCollisionWithTiles(Vector2? offset = null, Predicate<WorldTileMapTile> predicate = null) {
+            Point entityTilePosition = WorldTileMap.GetWorldToTilePosition(entity.position + new Vector2(TileRange % 2f == 0f ? (Tile.Size / 2f) : 0f));
+            List<WorldTileMapTile> worldTileMapTilesWithinRange = entity.world.TileMap.GetTilesWithinRange(entityTilePosition.X, entityTilePosition.Y, TileRange);
 
-            foreach (TileMapTile tileMapTile in tileMapTilesWithinRange) {
-                if (predicate?.Invoke(tileMapTile) ?? true) {
-                    if (polygon.GetCollisionWithPolygon(tileMapTile.GetPolygon(), offset)) {
+            foreach (WorldTileMapTile worldTileMapTile in worldTileMapTilesWithinRange) {
+                if (predicate?.Invoke(worldTileMapTile) ?? true) {
+                    if (polygon.GetCollisionWithPolygon(worldTileMapTile.GetPolygon(), offset)) {
                         return true;
                     }
                 }
@@ -71,21 +71,21 @@
             return false;
         }
 
-        public bool GetCollisionWithTiles(out List<TileMapTile> tileMapTiles, Vector2? offset = null, Predicate<TileMapTile> predicate = null) {
-            tileMapTiles = new List<TileMapTile>();
+        public bool GetCollisionWithTiles(out List<WorldTileMapTile> worldTileMapTiles, Vector2? offset = null, Predicate<WorldTileMapTile> predicate = null) {
+            worldTileMapTiles = new List<WorldTileMapTile>();
 
-            Point entityTilePosition = TileMap.GetWorldToTilePosition(entity.position + new Vector2(TileRange % 2f == 0f ? (Tile.Size / 2f) : 0f));
-            List<TileMapTile> tileMapTilesWithinRange = entity.world.tileMap.GetTilesWithinRange(entityTilePosition.X, entityTilePosition.Y, TileRange);
+            Point entityTilePosition = WorldTileMap.GetWorldToTilePosition(entity.position + new Vector2(TileRange % 2f == 0f ? (Tile.Size / 2f) : 0f));
+            List<WorldTileMapTile> tileMapTilesWithinRange = entity.world.TileMap.GetTilesWithinRange(entityTilePosition.X, entityTilePosition.Y, TileRange);
 
-            foreach (TileMapTile tileMapTile in tileMapTilesWithinRange) {
+            foreach (WorldTileMapTile tileMapTile in tileMapTilesWithinRange) {
                 if (predicate?.Invoke(tileMapTile) ?? true) {
                     if (polygon.GetCollisionWithPolygon(tileMapTile.GetPolygon(), offset)) {
-                        tileMapTiles.Add(tileMapTile);
+                        worldTileMapTiles.Add(tileMapTile);
                     }
                 }
             }
 
-            return tileMapTiles.Count > 0;
+            return worldTileMapTiles.Count > 0;
         }
 
         public void MakeContactWithTiles(float distance, MathUtilities.Direction direction) {
@@ -150,12 +150,12 @@
 
                 bool collision = false;
 
-                Point tilePosition = TileMap.GetWorldToTilePosition(entity.position + positionChange + new Vector2(TileRange % 2f == 0f ? (Tile.Size / 2f) : 0f));
-                
-                List<TileMapTile> tileMapTilesWithinRange = entity.world.tileMap.GetTilesWithinRange(tilePosition.X, tilePosition.Y, TileRange);
+                Point tilePosition = WorldTileMap.GetWorldToTilePosition(entity.position + positionChange + new Vector2(TileRange % 2f == 0f ? (Tile.Size / 2f) : 0f));
 
-                foreach (TileMapTile tileMapTile in tileMapTilesWithinRange) {
-                    if (polygon.GetCollisionWithPolygon(tileMapTile.GetPolygon(), positionChange)) {
+                List<WorldTileMapTile> worldTileMapTilesWithinRange = entity.world.TileMap.GetTilesWithinRange(tilePosition.X, tilePosition.Y, TileRange);
+
+                foreach (WorldTileMapTile worldTileMapTile in worldTileMapTilesWithinRange) {
+                    if (polygon.GetCollisionWithPolygon(worldTileMapTile.GetPolygon(), positionChange)) {
                         collision = true;
                         break;
                     }
